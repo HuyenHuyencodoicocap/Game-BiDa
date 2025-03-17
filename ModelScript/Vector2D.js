@@ -1,119 +1,102 @@
+class Vector2D {
+    constructor(x = 0, y = 0) {
+        this.x = x;
+        this.y = y;
+    }
 
-"use strict";
+    static get zero() {
+        return new Vector2D();
+    }
 
-function Vector2(x, y) {
-    this.x = typeof x !== 'undefined' ? x : 0;
-    this.y = typeof y !== 'undefined' ? y : 0;
-}
+    get isZero() {
+        return this.x === 0 && this.y === 0;
+    }
 
-Object.defineProperty(Vector2, "zero",
-    {
-        get: function () {
-            return new Vector2();
+    get length() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    addTo(v) {
+        if (v instanceof Vector2D) {
+            this.x += v.x;
+            this.y += v.y;
+        } else if (typeof v === 'number') {
+            this.x += v;
+            this.y += v;
         }
-    });
+        return this;
+    }
 
-Object.defineProperty(Vector2.prototype, "isZero",
-    {
-        get: function () {
-            return this.x === 0 && this.y === 0;
+    add(v) {
+        return this.copy().addTo(v);
+    }
+
+    subtractFrom(v) {
+        if (v instanceof Vector2D) {
+            this.x -= v.x;
+            this.y -= v.y;
+        } else if (typeof v === 'number') {
+            this.x -= v;
+            this.y -= v;
         }
-    });
+        return this;
+    }
 
-Object.defineProperty(Vector2.prototype, "length",
-    {
-        get: function () {
-            return Math.sqrt(this.x * this.x + this.y * this.y);
+    subtract(v) {
+        return this.copy().subtractFrom(v);
+    }
+
+    divideBy(v) {
+        if (v instanceof Vector2D) {
+            this.x /= v.x;
+            this.y /= v.y;
+        } else if (typeof v === 'number') {
+            this.x /= v;
+            this.y /= v;
         }
-    });
-
-Vector2.prototype.addTo = function (v) {
-    if (v.constructor === Vector2) {
-        this.x += v.x;
-        this.y += v.y;
+        return this;
     }
-    else if (v.constructor === Number) {
-        this.x += v;
-        this.y += v;
+
+    divide(v) {
+        return this.copy().divideBy(v);
     }
-    return this;
-};
 
-Vector2.prototype.add = function (v) {
-    var result = this.copy();
-    return result.addTo(v);
-};
-
-Vector2.prototype.subtractFrom = function (v) {
-    if (v.constructor === Vector2) {
-        this.x -= v.x;
-        this.y -= v.y;
+    multiplyWith(v) {
+        if (v instanceof Vector2D) {
+            this.x *= v.x;
+            this.y *= v.y;
+        } else if (typeof v === 'number') {
+            this.x *= v;
+            this.y *= v;
+        }
+        return this;
     }
-    else if (v.constructor === Number) {
-        this.x -= v;
-        this.y -= v;
+
+    multiply(v) {
+        return this.copy().multiplyWith(v);
     }
-    return this;
-};
 
-Vector2.prototype.subtract = function (v) {
-    var result = this.copy();
-    return result.subtractFrom(v);
-};
-
-Vector2.prototype.divideBy = function (v) {
-    if (v.constructor === Vector2) {
-        this.x /= v.x;
-        this.y /= v.y;
+    normalize() {
+        const length = this.length;
+        if (length !== 0) {
+            this.divideBy(length);
+        }
+        return this;
     }
-    else if (v.constructor === Number) {
-        this.x /= v;
-        this.y /= v;
+
+    copy() {
+        return new Vector2D(this.x, this.y);
     }
-    return this;
-};
 
-Vector2.prototype.divide = function (v) {
-    var result = this.copy();
-    return result.divideBy(v);
-};
-
-Vector2.prototype.multiplyWith = function (v) {
-    if (v.constructor === Vector2) {
-        this.x *= v.x;
-        this.y *= v.y;
+    equals(obj) {
+        return obj instanceof Vector2D && this.x === obj.x && this.y === obj.y;
     }
-    else if (v.constructor === Number) {
-        this.x *= v;
-        this.y *= v;
+
+    distanceFrom(obj) {
+        return Math.sqrt((this.x - obj.x) ** 2 + (this.y - obj.y) ** 2);
     }
-    return this;
-};
 
-Vector2.prototype.multiply = function (v) {
-    var result = this.copy();
-    return result.multiplyWith(v);
-};
-
-Vector2.prototype.toString = function () {
-    return "(" + this.x + ", " + this.y + ")";
-};
-
-Vector2.prototype.normalize = function () {
-    var length = this.length;
-    if (length === 0)
-        return;
-    this.divideBy(length);
-};
-
-Vector2.prototype.copy = function () {
-    return new Vector2(this.x, this.y);
-};
-
-Vector2.prototype.equals = function (obj) {
-    return this.x === obj.x && this.y === obj.y;
-};
-
-Vector2.prototype.distanceFrom = function(obj){
-    return Math.sqrt((this.x-obj.x)*(this.x-obj.x) + (this.y-obj.y)*(this.y-obj.y));
+    toString() {
+        return `(${this.x}, ${this.y})`;
+    }
 }

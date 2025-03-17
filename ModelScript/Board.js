@@ -1,9 +1,12 @@
 class Board {
-    constructor(holePositions, holeRadius, width, height) {
-        this.HolePosition = Object.freeze(holePositions); // Mảng vị trí lỗ (Vector2D[])
-        this.HoleRadius = holeRadius; // Bán kính lỗ (const float)
-        this.width = width; // Chiều rộng (const float)
-        this.height = height; // Chiều cao (const float)
+    constructor() {
+        this.img=PoolGame.getInstance().assets.images["board"];
+        
+        this.HolePosition = []; // Mảng vị trí lỗ (Vector2D[])
+        this.HoleRadius = 55; // Bán kính lỗ (const float)
+        this.width = this.img.width; // Chiều rộng (const float)
+        this.height = this.img.height; // Chiều cao (const float)
+        
 
         // Viền của bàn chơi
         this.topWall = 0;
@@ -16,7 +19,8 @@ class Board {
     }
 
     draw() {
-        // Vẽ lên màn hình
+
+        PoolGame.getInstance().myCanvas.DrawImage(this.img,new Vector2D(0,0),0);
     }
 }
 

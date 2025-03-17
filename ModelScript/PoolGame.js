@@ -1,27 +1,21 @@
-
 class PoolGame {
     constructor() {
-        this.gameWorld = new GameWorld();
-        this.asset = new Asset();
-        this.Canvas = new Canvas();
+        PoolGame.instance=this;
+        this.assets = new Assets();
+        this.myCanvas = new MyCanvas();
     }
-
+    
     static getInstance() {
-        if (!PoolGame.instance) {
-            PoolGame.instance = new PoolGame();
-        }
         return PoolGame.instance;
     }
-
-    preload() {
-        console.log("Chưa làm hàm reload tài game");
-        // Thêm logic tải tài nguyên tại đây
-    }
-
+    
+    
     init() {
-        this.preload();
-        this.gameWorld.init();
-        console.log("Game initialized.");
+        this.assets.preLoad().then(()=>{
+            this.gameWorld = new GameWorld();
+            console.log("Game initialized.");
+            requestAnimationFrame(() => this.gameWorld.gameLoop());
+        });
     }
 }
 
