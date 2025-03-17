@@ -14,12 +14,19 @@
     }
 
     function startGame(mode) {
-        if (mode === 'pvp') {
-            window.location.href = 'game.html?mode=pvp';
-        } else {
-            window.location.href = 'game.html?mode=bot';
-        }
+        // Hiển thị ảnh quy tắc
+        document.getElementById("control-container").style.display = "block";
+    
+        // Đợi 5 giây trước khi chuyển đến game.html
+        setTimeout(function () {
+            if (mode === 'pvp') {
+                window.location.href = 'game.html?mode=pvp';
+            } else {
+                window.location.href = 'game.html?mode=bot';
+            }
+        }, 5000);
     }
+    
 
     
 
