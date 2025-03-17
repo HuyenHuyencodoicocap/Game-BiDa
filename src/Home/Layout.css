@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: url('../../Assets/Image/background_Home.png');
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    font-size: 50px;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    font-size: 100px;
+    margin-top: 100px;
+    text-shadow: 2px 2px 5px black;
+}
+
+.menu-container {
+    margin-top: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 40px; /* Khoảng cách giữa hai nút */
+}
+
+.menu-button {
+    width: 600px;
+    height: 180px;
+    padding: 15px;
+    font-size: 50px;
+    background: #7C1D1D;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 3px 3px 10px black;
+}
+
+.menu-button:hover {
+    background: #A32D2D;
+}
+
+.sound-icon {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    width: 100px;
+    cursor: pointer;
+}
+
+.footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    font-size: 14px;
+    text-shadow: 1px 1px 5px black;
+}

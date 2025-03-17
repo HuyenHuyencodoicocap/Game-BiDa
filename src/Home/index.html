@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Pool Team2</title>
+    <link rel="stylesheet" href="Layout.css">
+    
+</head>
+<body>
+    <h1>GAME POOL TEAM 2</h1>
+
+    <div class="menu-container">
+        <button class="menu-button" onclick="startGame('pvp')">Player vs Player</button>
+        <button class="menu-button" onclick="startGame('bot')">Player vs COM</button>
+    </div>
+
+    <audio id="background-music" loop>
+        <source src="../../Assets/Sounds/sound_Home.mp3" type="audio/mp3">
+    </audio>
+    
+    <img id="sound-icon" src="../../Assets/Image/mute_button_hover.png" class="sound-icon" onclick="toggleSound()">
+
+    <script src="script.js"></script>
+</body>
+</html>
