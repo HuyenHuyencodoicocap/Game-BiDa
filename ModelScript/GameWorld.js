@@ -30,7 +30,6 @@ class GameWorld {
 
     update() {
         // Cập nhật trạng thái game, vị trí bóng, kiểm tra va chạm, v.v.
-        this.draw();
     }
 
     draw() {
@@ -84,13 +83,15 @@ class GameWorld {
 
     initEventListeners() {
         document.addEventListener("keydown", (event) => this.handleInput(event));
+        // document.addEventListener("mousedown", (event) => this.handleInput(event));
     }
     gameLoop() {
         this.update();
+        this.draw();
         requestAnimationFrame(() => this.gameLoop());
     }
 
-    createTriangleBalls(startPos, numBalls, ballRadius) {
+    createTriangleBalls(startPos, numBalls, ballRadius) { // vẽ tam giác bóng ban đầu
         let rows = 1;
         while ((rows * (rows + 1)) / 2 < numBalls) {
             rows++; // Tìm số hàng cần để xếp đủ bóng

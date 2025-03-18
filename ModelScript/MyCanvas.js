@@ -58,7 +58,7 @@ class MyCanvas {
         this.context.save(); 
         this.context.translate(x, y); // Di chuyển đến vị trí vẽ
         this.context.rotate(radians); // Xoay ảnh
-        this.context.drawImage(image, -u,-v,newWidth,newHeight); // Vẽ ảnh với tâm tại vị trí 0,0, kích thước tùy chỉnh
+        this.context.drawImage(image, -u,-v,newWidth,newHeight); // Vẽ ảnh với tâm tại vị trí u,v, kích thước tùy chỉnh
         this.context.restore(); // Khôi phục trạng thái ban đầu
     }
 

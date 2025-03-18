@@ -4,14 +4,14 @@ class Stick {
         this.angle = 0; // Hướng gậy
         this.power = 0; // Lực gậy
     }
-    
+
     getPositionDraw() {
         // Code lấy vị trí vẽ gậy dựa trên vị trí bi trắng
     }
-    
+
     draw() {
         // Code vẽ gậy lên màn hình
-        this.origin = new Vector2D(this.img.width+Ball.origin.x+this.power,this.img.height/2);
+        this.origin = new Vector2D(this.img.width + Ball.origin.x + this.power, this.img.height / 2);
         PoolGame.getInstance().myCanvas.DrawImage(
             this.img,
             PoolGame.getInstance().gameWorld.whiteBall.position,
@@ -21,22 +21,22 @@ class Stick {
     }
 
     upPower() {
-        this.power++;
-        if(this.power>100)this.power=100;
+        this.power += 4;
+        if (this.power > 200) this.power = 200;
     }
     downPower() {
-        this.power--;
-        if(this.power<0)this.power=0;
+        this.power -= 4;
+        if (this.power < 0) this.power = 0;
     }
 
     upAngle() {
         this.angle++;
-        this.angle%=360;
+        this.angle %= 360;
     }
     downAngle() {
         this.angle--;
-        this.angle+=360;
-        this.angle%=360;
+        this.angle += 360;
+        this.angle %= 360;
     }
 
     shoot() {

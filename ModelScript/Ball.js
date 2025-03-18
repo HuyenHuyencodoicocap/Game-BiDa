@@ -7,7 +7,6 @@ class Ball {
     constructor(position, color = BallColor.WHITE) {
         
         this.position = position; // Vector2D
-        this.offset = new Vector2D(0, 0); // Không thay đổi
         this.color = color; // Chỉ nhận 3 màu hợp lệ kiểu enum
         this.isInHole = false; // Bóng có vào lỗ không kiểu bool
         this.vantoc = new Vector2D(0, 0); // Vận tốc ban đầu
