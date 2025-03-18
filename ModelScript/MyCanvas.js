@@ -25,18 +25,29 @@ class MyCanvas {
             return 1;
         }
     }
-
+    getOffset(){
+        try{
+            return this.size.subtract(PoolGame.getInstance().gameWorld.size.multiply(this.getScale())).divideBy(2);
+        }catch (e){
+            console.log(e)
+            return Vector2D.zero;
+        }
+    }
     resizeCanvas() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+        this.size = new Vector2D(this.canvas.width,this.canvas.height);
     }
-    DrawImage(image, position, angle) {
+    DrawImage(image, position, angle,origin = new Vector2D(0,0)) {
         if (!image.complete) {
             console.warn("Hình ảnh chưa được load hoàn toàn.");
             return;
         }
-        
-        const { x, y } = position*this.getScale();
+        let newpos = position.multiply(this.getScale()).add(this.getOffset());
+        let neworigin = origin.multiply(this.getScale());
+
+        const { x, y } = newpos;
+        const u=neworigin.x, v = neworigin.y;
 
         const imageWidth = image.width;
         const imageHeight = image.height;
@@ -44,13 +55,10 @@ class MyCanvas {
         const newHeight = imageHeight * this.getScale();
         const radians = (angle * Math.PI) / 180; 
         
-        
         this.context.save(); 
         this.context.translate(x, y); // Di chuyển đến vị trí vẽ
         this.context.rotate(radians); // Xoay ảnh
-        
-        this.context.drawImage(image, 0, 0,newWidth,newHeight); // Vẽ ảnh với tâm tại vị trí 0,0, kích thước tùy chỉnh
-        
+        this.context.drawImage(image, -u,-v,newWidth,newHeight); // Vẽ ảnh với tâm tại vị trí 0,0, kích thước tùy chỉnh
         this.context.restore(); // Khôi phục trạng thái ban đầu
     }
 

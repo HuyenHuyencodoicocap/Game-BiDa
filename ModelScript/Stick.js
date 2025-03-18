@@ -1,28 +1,42 @@
 class Stick {
-    constructor(angle, power) {
-        Object.defineProperty(this, "length", {
-            value: 100, // Giá trị cố định 100px
-            writable: false // Ngăn thay đổi chiều dài
-        });
-
-        this.angle = angle; // Hướng gậy
-        this.power = power; // Lực gậy
+    constructor() {
+        this.img = PoolGame.getInstance().assets.images['stick'];
+        this.angle = 0; // Hướng gậy
+        this.power = 0; // Lực gậy
     }
-
+    
     getPositionDraw() {
         // Code lấy vị trí vẽ gậy dựa trên vị trí bi trắng
     }
-
+    
     draw() {
         // Code vẽ gậy lên màn hình
+        this.origin = new Vector2D(this.img.width+Ball.origin.x+this.power,this.img.height/2);
+        PoolGame.getInstance().myCanvas.DrawImage(
+            this.img,
+            PoolGame.getInstance().gameWorld.whiteBall.position,
+            this.angle,
+            this.origin
+        );
     }
 
-    setPower(power) {
-        this.power = power;
+    upPower() {
+        this.power++;
+        if(this.power>100)this.power=100;
+    }
+    downPower() {
+        this.power--;
+        if(this.power<0)this.power=0;
     }
 
-    setAngle(angle) {
-        this.angle = angle;
+    upAngle() {
+        this.angle++;
+        this.angle%=360;
+    }
+    downAngle() {
+        this.angle--;
+        this.angle+=360;
+        this.angle%=360;
     }
 
     shoot() {

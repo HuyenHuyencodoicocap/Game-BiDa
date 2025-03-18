@@ -1,11 +1,11 @@
 class GameWorld {
     constructor() {
-        this.whiteBall = new Ball(new Vector2D(300, 400), "white"); // Đặt bóng trắng ở vị trí ban đầu
+        this.whiteBall = new Ball(new Vector2D(410, 825/2), BallColor.WHITE); // Đặt bóng trắng ở vị trí ban đầu
 
         this.redBall = [];
         this.yellowBall = [];
 
-        this.createTriangleBalls(new Vector2D(500, 300), 10, 30); // Vị trí gốc, số lượng bóng, khoảng cách giữa bóng
+        this.createTriangleBalls(new Vector2D(1100, 825/2), 10, 25); // Vị trí gốc, số lượng bóng, khoảng cách giữa bóng
         this.AllBalls = [...this.redBall, ...this.yellowBall, this.whiteBall];
 
         this.stick = new Stick();
@@ -13,7 +13,7 @@ class GameWorld {
 
         this.width = this.board.width;
         this.height = this.board.height;
-
+        this.size = new Vector2D(this.width,this.height);
 
         this.turn = 1; // Lượt đánh hiện tại
         this.isBotOn = false; // Chế độ bot
@@ -40,6 +40,7 @@ class GameWorld {
         for (let i = 0; i < this.AllBalls.length; i++) {
             this.AllBalls[i].draw();
         }
+        this.stick.draw();
 
 
     }
@@ -47,7 +48,6 @@ class GameWorld {
     handleInput(event) {
         if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
 
-        // Sự kiện đầu vào chuột
     }
 
     reset() {
@@ -77,16 +77,16 @@ class GameWorld {
         let index = 0;
         let colorSwitch = true; // Để xen kẽ giữa đỏ và vàng
         for (let i = 0; i < rows; i++) {
-            let yOffset = i * ballRadius * Math.sqrt(3); // Khoảng cách giữa các hàng theo chiều dọc
-            let startX = startPos.x - (i * ballRadius); // Căn chỉnh để tạo hình tam giác đều
+            let xOffset = i * ballRadius * Math.sqrt(3); // Khoảng cách giữa các hàng theo chiều dọc
+            let startY = startPos.y - (i * ballRadius); // Căn chỉnh để tạo hình tam giác đều
 
             for (let j = 0; j <= i; j++) {
                 if (index >= numBalls) return; // Nếu đủ 10 quả bóng thì dừng
 
-                let x = startX + j * (2 * ballRadius); // Khoảng cách giữa các bóng theo chiều ngang
-                let y = startPos.y + yOffset;
+                let x = startPos.x + xOffset;
+                let y = startY + j * (2 * ballRadius); // Khoảng cách giữa các bóng theo chiều ngang
 
-                let newBall = new Ball(new Vector2D(x, y), colorSwitch ? "red" : "yellow");
+                let newBall = new Ball(new Vector2D(x, y), colorSwitch ? BallColor.RED : BallColor.YELLOW);
 
                 if (colorSwitch) {
                     this.redBall.push(newBall);
