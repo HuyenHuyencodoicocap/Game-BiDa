@@ -36,7 +36,7 @@ class Ball {
     }
 
     updateMoving(deltaTime) { // update vị trí của bóng
-        const friction = 0.98; // Ma sát để bóng giảm tốc
+        const friction = 0.99; // Ma sát để bóng giảm tốc
         this.vantoc = this.vantoc.multiply(friction);
         //magnitude() là hàm tính độ lớn của vector (định lý Pitago)
         if (this.vantoc.magnitude() < 0.01) {

@@ -30,10 +30,19 @@ class GameWorld {
 
     update() {
         // Cập nhật trạng thái game, vị trí bóng, kiểm tra va chạm, v.v.
-        this.curTime = Date.now();
+        let curTime = Date.now();
+        let deltaTime = curTime-this.lastTime;
+        this.lastTime=curTime;
         for(let i=0;i<this.AllBalls.length;i++){
             if(this.AllBalls[i].isInHole)continue;
-            this.AllBalls[i].update();
+            this.AllBalls[i].update(deltaTime);
+        }
+        if(this.lockInput){
+            let isNextTurn = true;
+            for(let ball of this.AllBalls){
+                if(ball.isMoving())isNextTurn=false;
+            }
+            if(isNextTurn) this.lockInput=false
         }
     }
 
@@ -69,11 +78,16 @@ class GameWorld {
                 break;
             case "Space":
                 this.stick.shoot()
+                this.lockInput=true;
+                this.stick.power=0;
                 break;
             default:
                 break;
         }
         
+    }
+    changeTurn(){
+        console.log('chưa làm đổi lượt')
     }
 
     reset() {
