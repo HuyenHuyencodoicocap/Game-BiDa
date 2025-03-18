@@ -48,6 +48,28 @@ class GameWorld {
     handleInput(event) {
         if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
 
+        var keyCode = event.code;
+        console.log(keyCode);
+        switch (keyCode) {
+            case "ArrowLeft":
+                this.stick.downAngle()       
+                break;
+            case "ArrowRight":
+                this.stick.upAngle()       
+                break;
+            case "ArrowUp":
+                this.stick.upPower()
+                break;
+            case "ArrowDown":
+                this.stick.downPower()
+                break;
+            case "Space":
+                this.stick.shoot()
+                break;
+            default:
+                break;
+        }
+        
     }
 
     reset() {

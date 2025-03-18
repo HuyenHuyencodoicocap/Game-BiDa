@@ -13,6 +13,7 @@ class PoolGame {
     init() {
         this.assets.preLoad().then(()=>{
             this.gameWorld = new GameWorld();
+            window.addEventListener("keydown", (event)=>this.gameWorld.handleInput(event));
             console.log("Game initialized.");
             requestAnimationFrame(() => this.gameWorld.gameLoop());
         });
