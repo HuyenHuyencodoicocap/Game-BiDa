@@ -95,6 +95,9 @@ class Vector2D {
     distanceFrom(obj) {
         return Math.sqrt((this.x - obj.x) ** 2 + (this.y - obj.y) ** 2);
     }
+    magnitude(){
+        return Math.sqrt(this.x ** 2 + this.y ** 2);
+    }
 
     toString() {
         return `(${this.x}, ${this.y})`;

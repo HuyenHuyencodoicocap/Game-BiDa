@@ -41,5 +41,8 @@ class Stick {
 
     shoot() {
         // Hàm bắn bóng
+        let dx = this.power*Math.cos(this.angle*Math.PI/180);
+        let dy = this.power*Math.sin(this.angle*Math.PI/180);
+        PoolGame.getInstance().gameWorld.whiteBall.vantoc = new Vector2D(dx,dy);
     }
 }

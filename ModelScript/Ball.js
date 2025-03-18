@@ -24,6 +24,7 @@ class Ball {
 
     update(deltaTime) { 
         if (this.isMoving()) {
+            console.log(this.vantoc)
             this.position = this.position.add(this.vantoc.multiply(deltaTime));// Nếu đang di chuyển lấy vị trí hiện tại cộng thêm v*t(quãng đường vừa di chuyển deltatime)
             this.updateMoving(deltaTime);
         }

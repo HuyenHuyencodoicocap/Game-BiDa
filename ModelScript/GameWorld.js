@@ -5,7 +5,7 @@ class GameWorld {
         this.redBall = [];
         this.yellowBall = [];
 
-        this.createTriangleBalls(new Vector2D(1100, 825/2), 10, 25); // Vị trí gốc, số lượng bóng, khoảng cách giữa bóng
+        this.createTriangleBalls(new Vector2D(1000, 825/2), 10, 25); // Vị trí gốc, số lượng bóng, khoảng cách giữa bóng
         this.AllBalls = [...this.redBall, ...this.yellowBall, this.whiteBall];
 
         this.stick = new Stick();
@@ -25,11 +25,16 @@ class GameWorld {
 
         this.initEventListeners();
 
-
+        this.lastTime=Date.now();
     }
 
     update() {
         // Cập nhật trạng thái game, vị trí bóng, kiểm tra va chạm, v.v.
+        this.curTime = Date.now();
+        for(let i=0;i<this.AllBalls.length;i++){
+            if(this.AllBalls[i].isInHole)continue;
+            this.AllBalls[i].update();
+        }
     }
 
     draw() {
