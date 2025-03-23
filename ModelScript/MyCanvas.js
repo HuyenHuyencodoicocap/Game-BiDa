@@ -34,8 +34,8 @@ class MyCanvas {
         }
     }
     resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.height = this.canvas.clientHeight;
         this.size = new Vector2D(this.canvas.width,this.canvas.height);
     }
     DrawImage(image, position, angle,origin = new Vector2D(0,0)) {

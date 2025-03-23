@@ -1,0 +1,62 @@
+
+body {
+    text-align: center;
+    background-color: #abd1c6;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+.player-playing{
+    animation: blink-border 1s infinite;
+}
+@keyframes blink-border {
+    0% { border-color: #f9bc60; }
+    50% { border-color: initial; }
+    100% { border-color: #f9bc60; }
+  }
+  
+.player-info {
+    display: flex;
+    justify-content: center;
+    /* width: 800px; */
+    margin: 0 auto 20px auto;
+    padding: 10px;
+    width: 64vw;
+}
+.player-box {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    margin: 0 1vw;
+    gap: 5px;;
+    border: 5px solid #001e1d;
+    border-radius: 3px;
+    padding: 0 1vw;
+    background-color:   #004643;
+    color: #fffffe;
+
+    
+}
+.player-box .image-box {
+    /* width: 100px; */
+    height: 60px;
+    background-color: #f9bc60;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border: 2px solid green;
+}
+.player-info .info {
+    display: flex;
+    flex-direction: column;
+    
+    flex: 1;
+   
+}
+.info .name, .info .score {
+    /* border: 1px solid green; */
+    padding: 10px;
+    /* width: 100%; */
+    
+}
