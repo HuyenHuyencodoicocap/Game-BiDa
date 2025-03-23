@@ -36,6 +36,11 @@ class GameWorld {
         for(let i=0;i<this.AllBalls.length;i++){
             if(this.AllBalls[i].isInHole)continue;
             this.AllBalls[i].update(deltaTime);
+            for(let j = i+1;j<this.AllBalls.length;j++){
+                this.AllBalls[i].CollideBall(this.AllBalls[j]);
+            }
+            this.AllBalls[i].CollideWall();
+            this.AllBalls[i].CollideHole();
         }
         if(this.lockInput){
             let isNextTurn = true;

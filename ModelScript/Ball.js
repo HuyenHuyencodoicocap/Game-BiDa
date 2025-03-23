@@ -32,7 +32,7 @@ class Ball {
 
     draw() {
         // Code hàm vẽ bóng tại đây
-        PoolGame.getInstance().myCanvas.DrawImage(this.img,this.position,0,Ball.origin);
+        if(this.isInHole==false)PoolGame.getInstance().myCanvas.DrawImage(this.img,this.position,0,Ball.origin);
     }
 
     updateMoving(deltaTime) { // update vị trí của bóng
@@ -65,7 +65,7 @@ class Ball {
 
     CollideWall() {
         //Code bóng va chạm thành bàn ở đây
-        let board = PoolGame.getInstance().board; // Lấy đối tượng bàn
+        let board = PoolGame.getInstance().gameWorld.board; // Lấy đối tượng bàn
         let radius = this.img.width / 2; // Bán kính bóng
 
         // Kiểm tra va chạm với viền trái & phải
@@ -83,14 +83,14 @@ class Ball {
 
     CollideHole() {
         //Code bóng vào lỗ ở đây
-        let board = PoolGame.getInstance().board; // Lấy đối tượng bàn
+        let board = PoolGame.getInstance().gameWorld.board; // Lấy đối tượng bàn
         let radius = this.img.width / 2; // Bán kính bóng
 
         for (let hole of board.HolePosition) {
             let distance = this.position.subtract(hole).magnitude();
             if (distance <= board.HoleRadius - radius) {
                 this.isInHole = true;
-                PoolGame.getInstance().removeBall(this); // Xóa bóng khỏi bàn
+                // PoolGame.getInstance().removeBall(this); // Xóa bóng khỏi bàn
                 break;
             }
         }

@@ -98,7 +98,9 @@ class Vector2D {
     magnitude(){
         return Math.sqrt(this.x ** 2 + this.y ** 2);
     }
-
+    dot(other) {
+        return this.x * other.x + this.y * other.y;
+    }
     toString() {
         return `(${this.x}, ${this.y})`;
     }
