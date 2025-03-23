@@ -108,7 +108,7 @@ class GameWorld {
             case "ArrowDown":
                 this.stick.downPower()
                 break;
-            case "Space":
+            case "Space":case "Enter":
                 this.stick.shoot()
                 this.lockInput = true;
                 this.stick.power = 0;

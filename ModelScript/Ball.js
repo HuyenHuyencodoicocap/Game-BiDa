@@ -98,7 +98,7 @@ class Ball {
 
 
     isMoving() {
-        return this.vantoc.magnitude() > 0;
+        return !this.isInHole && this.vantoc.magnitude() > 0;
     }
 }
 
