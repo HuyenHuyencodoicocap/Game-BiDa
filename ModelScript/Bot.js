@@ -1,27 +1,29 @@
 import SpecialCase from "../CommonHelper/Model/specialCase";
 import AITrainer from "../CommonHelper/Model/algorithm";
 class Bot {
-    constructor(stick, balls) {
-        this.stick = stick;
-        this.balls = balls;
-        this.specialCase = new SpecialCase(balls, new Board())
-        this.aiTrainer = new AITrainer({
+    constructor() {
+    }
+
+
+    takeShot() {
+        let redBalls = PoolGame.getInstance().gameWorld.redBall
+        let yellowBalls = PoolGame.getInstance().gameWorld.yellowBall
+        let balls = [...redBalls, ...yellowBalls].filter(item => !item.isInHole)
+        let specialCase = new SpecialCase(balls, new Board())
+        let aiTrainer = new AITrainer({
             whiteBall: PoolGame.getInstance().gameWorld.whiteBall,
             balls: balls,
             holes: new Board().HolePosition
         });
-    }
-
-    takeShot() {
-        let special = this.specialCase.getSpecialCase()
+        let special = specialCase.getSpecialCase()
         if (special.isBool) {
             return special.shotInfo
         }
-        let bestShot = this.aiTrainer.train();
+        let bestShot = aiTrainer.train();
         return bestShot;
     }
-    playTurn() {
-        let bestShot = this.takeShot()
-        this.stick.shoot(bestShot.angle, bestShot.power)
-    }
+    // playTurn() {
+    //     let bestShot = this.takeShot()
+    //     this.stick.shoot(bestShot.angle, bestShot.power)
+    // }
 }
