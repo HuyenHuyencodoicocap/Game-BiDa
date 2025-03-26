@@ -1,48 +1,27 @@
+import SpecialCase from "../CommonHelper/Model/specialCase";
+import AITrainer from "../CommonHelper/Model/algorithm";
 class Bot {
     constructor(stick, balls) {
-        this.stick = stick; // Gậy để đánh bóng
-        this.balls = balls; // Danh sách các bi có trên bàn
+        this.stick = stick;
+        this.balls = balls;
+        this.specialCase = new SpecialCase(balls, new Board())
+        this.aiTrainer = new AITrainer({
+            whiteBall: PoolGame.getInstance().gameWorld.whiteBall,
+            balls: balls,
+            holes: new Board().HolePosition
+        });
     }
 
-    /**
-     * Tính toán bi cần đánh, lực và góc để thực hiện cú đánh.
-     */
-    calculate() {
-        if (this.balls.length === 0) {
-            console.log("Không có bi nào để đánh!");
-            return;
+    takeShot() {
+        let special = this.specialCase.getSpecialCase()
+        if (special.isBool) {
+            return special.shotInfo
         }
-
-        // Chọn viên bi gần bi trắng nhất
-        
-        // Tính góc giữa bi trắng và bi mục tiêu
-
-        // Tính lực đánh 
-
-        // Thiết lập góc và lực cho gậy
-
-        // Thực hiện cú đánh
-       
+        let bestShot = this.aiTrainer.train();
+        return bestShot;
     }
-
-    
-    findBestBall() {
-        // Tìm viên bi phù hợp nhất để đánh (gần bi trắng nhất).
-    }
-
-    calculateAngle(targetBall) {
-        // Tính toán góc bắn từ bi trắng đến bi mục tiêu.
-    }
-
-    /**
-     * 
-     */
-    calculatePower(targetBall) {
-        // Tính lực đánh dựa vào khoảng cách giữa bi trắng và bi mục tiêu.0
-    }
-
-    getDistance(ball1, ball2) {
-        //      * Tính khoảng cách giữa hai điểm (bi).
-
+    playTurn() {
+        let bestShot = this.takeShot()
+        this.stick.shoot(bestShot.angle, bestShot.power)
     }
 }
