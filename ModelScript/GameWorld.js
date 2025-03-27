@@ -111,10 +111,10 @@ class GameWorld {
                 this.stick.downPower()
                 break;
             case "Space": case "Enter":
-                let take = this.bot.takeShot();
-                this.stick.shoot(take.angle, take.power)
-                // this.stick.shoot()
-                this.lockInput = false;
+                // let take = this.bot.takeShot();
+                // this.stick.shoot(take.angle, take.power)
+                this.stick.shoot()
+                this.lockInput = true;
                 this.stick.power = 0;
                 break;
             default:
