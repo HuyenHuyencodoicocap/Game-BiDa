@@ -10,6 +10,7 @@ class GameWorld {
 
         this.stick = new Stick();
         this.board = new Board();
+        //this.bot = new Bot()
 
         this.width = this.board.width;
         this.height = this.board.height;
@@ -29,10 +30,10 @@ class GameWorld {
 
         this.player1 = document.getElementById("player1")// người chơi 1
         this.player2 = document.getElementById("player2")
-        this.player1_score=0;
-        this.player2_score=0;
-        this.player1_score_elem=document.getElementById("player1_score");
-        this.player2_score_elem=document.getElementById("player2_score");
+        this.player1_score = 0;
+        this.player2_score = 0;
+        this.player1_score_elem = document.getElementById("player1_score");
+        this.player2_score_elem = document.getElementById("player2_score");
     }
 
     update() {
@@ -43,7 +44,7 @@ class GameWorld {
         for (let i = 0; i < this.AllBalls.length; i++) {
             if (this.AllBalls[i].isInHole) continue;
             this.AllBalls[i].update(deltaTime);
-            for(let j = i+1;j<this.AllBalls.length;j++){
+            for (let j = i + 1; j < this.AllBalls.length; j++) {
                 this.AllBalls[i].CollideBall(this.AllBalls[j]);
             }
             this.AllBalls[i].CollideWall();
@@ -60,21 +61,21 @@ class GameWorld {
                 this.changeTurn();
             }
 
-            this.player1_score=0;
-            this.player2_score=0;
-            for(let i=0; i< this.yellowBall.length;i++){
-                if(this.yellowBall[i].isInHole){
-                    this.player1_score+=1;
+            this.player1_score = 0;
+            this.player2_score = 0;
+            for (let i = 0; i < this.yellowBall.length; i++) {
+                if (this.yellowBall[i].isInHole) {
+                    this.player1_score += 1;
                 }
             }
-            for(let i=0; i< this.redBall.length;i++){
-                if(this.redBall[i].isInHole){
-                    this.player2_score+=1;
+            for (let i = 0; i < this.redBall.length; i++) {
+                if (this.redBall[i].isInHole) {
+                    this.player2_score += 1;
                 }
             }
-            this.player1_score_elem.innerHTML=this.player1_score
-            this.player2_score_elem.innerHTML=this.player2_score
-            
+            this.player1_score_elem.innerHTML = this.player1_score
+            this.player2_score_elem.innerHTML = this.player2_score
+
         }
 
 
@@ -95,6 +96,7 @@ class GameWorld {
         if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
 
         var keyCode = event.code;
+
         console.log(keyCode);
         switch (keyCode) {
             case "ArrowLeft":
@@ -109,9 +111,11 @@ class GameWorld {
             case "ArrowDown":
                 this.stick.downPower()
                 break;
-            case "Space":case "Enter":
-                this.stick.shoot()
-                this.lockInput = true;
+            case "Space": case "Enter":
+                let take = this.bot.takeShot();
+                this.stick.shoot(take.angle, take.power)
+                // this.stick.shoot()
+                this.lockInput = false;
                 this.stick.power = 0;
                 break;
             default:
@@ -136,15 +140,15 @@ class GameWorld {
     }
 
     isWin() {
-        if(this.player1_score==5){
+        if (this.player1_score == 5) {
             return true;
         }
-        else if(this.player2_score==5){
+        else if (this.player2_score == 5) {
             return true;
-        }else{
+        } else {
             return false;
         }
-        
+
 
     }
 
