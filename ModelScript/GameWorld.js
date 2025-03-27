@@ -49,6 +49,7 @@ class GameWorld {
             this.AllBalls[i].CollideWall();
             this.AllBalls[i].CollideHole();
         }
+        
         if (this.lockInput) {
             let isNextTurn = true;
             for (let ball of this.AllBalls) {
@@ -76,6 +77,8 @@ class GameWorld {
             
         }
 
+
+
         this.isWin();
     }
     draw() {
@@ -86,8 +89,6 @@ class GameWorld {
             this.AllBalls[i].draw();
         }
         this.stick.draw();
-
-
     }
 
     handleInput(event) {
@@ -187,6 +188,24 @@ class GameWorld {
                 index++;
             }
         }
+    }
+
+    onWhiteInHole() {
+        console.log("Bi trắng đã rơi vào lỗ!");
+
+        // Đặt lại vị trí bi trắng
+        this.whiteBall = new Ball(new Vector2D(410, 825 / 2), BallColor.WHITE);
+
+        // Cập nhật lại danh sách bóng
+        this.AllBalls = [...this.redBall, ...this.yellowBall, this.whiteBall];
+
+        // Nếu đang trong chế độ chơi với bot, có thể thêm logic xử lý tùy theo yêu cầu
+        if (this.isBotOn && this.turn === 2) {
+            this.changeTurn(); // Chuyển lượt nếu bot đang chơi
+        }
+
+        // Chuyển lượt đánh vì đánh lỗi
+        this.changeTurn();
     }
 
 }
