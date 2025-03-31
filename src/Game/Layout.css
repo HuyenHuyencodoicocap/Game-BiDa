@@ -60,3 +60,16 @@ body {
     /* width: 100%; */
     
 }
+.displayWinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color:#fffffe;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    display: none;
+   
+}
+

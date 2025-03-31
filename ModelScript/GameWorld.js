@@ -31,8 +31,12 @@ class GameWorld {
         this.player2 = document.getElementById("player2")
         this.player1_score=0;
         this.player2_score=0;
-        this.player1_score_elem=document.getElementById("player1_score");
+        this.player1_score_elem=document.getElementById("player1_score");// Hiển thị điểm
         this.player2_score_elem=document.getElementById("player2_score");
+
+        this.namePlayerWinner1=document.getElementById("namePlayerWinner");// Hiển thị người chơi chiến thắng
+        this.namePlayerWinner2=document.getElementById("namePlayerWinner");
+        this.displayWinner=document.getElementById("displayWinner");
     }
 
     update() {
@@ -136,9 +140,13 @@ class GameWorld {
 
     isWin() {
         if(this.player1_score==5){
+            this.namePlayerWinner1.innerHTML="Player1"
+            this.displayWinner.style.display = "block";
             return true;
         }
         else if(this.player2_score==5){
+            this.namePlayerWinner2.innerHTML="Player2"
+            this.displayWinner.style.display = "block";
             return true;
         }else{
             return false;
