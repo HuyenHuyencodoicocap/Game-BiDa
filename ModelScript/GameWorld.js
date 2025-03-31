@@ -10,6 +10,7 @@ class GameWorld {
 
         this.stick = new Stick();
         this.board = new Board();
+        //this.bot = new Bot()
 
         this.width = this.board.width;
         this.height = this.board.height;
@@ -47,7 +48,7 @@ class GameWorld {
         for (let i = 0; i < this.AllBalls.length; i++) {
             if (this.AllBalls[i].isInHole) continue;
             this.AllBalls[i].update(deltaTime);
-            for(let j = i+1;j<this.AllBalls.length;j++){
+            for (let j = i + 1; j < this.AllBalls.length; j++) {
                 this.AllBalls[i].CollideBall(this.AllBalls[j]);
             }
             this.AllBalls[i].CollideWall();
@@ -63,21 +64,21 @@ class GameWorld {
                 this.changeTurn();
             }
 
-            this.player1_score=0;
-            this.player2_score=0;
-            for(let i=0; i< this.yellowBall.length;i++){
-                if(this.yellowBall[i].isInHole){
-                    this.player1_score+=1;
+            this.player1_score = 0;
+            this.player2_score = 0;
+            for (let i = 0; i < this.yellowBall.length; i++) {
+                if (this.yellowBall[i].isInHole) {
+                    this.player1_score += 1;
                 }
             }
-            for(let i=0; i< this.redBall.length;i++){
-                if(this.redBall[i].isInHole){
-                    this.player2_score+=1;
+            for (let i = 0; i < this.redBall.length; i++) {
+                if (this.redBall[i].isInHole) {
+                    this.player2_score += 1;
                 }
             }
-            this.player1_score_elem.innerHTML=this.player1_score
-            this.player2_score_elem.innerHTML=this.player2_score
-            
+            this.player1_score_elem.innerHTML = this.player1_score
+            this.player2_score_elem.innerHTML = this.player2_score
+
         }
 
         this.isWin();
@@ -98,6 +99,7 @@ class GameWorld {
         if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
 
         var keyCode = event.code;
+
         console.log(keyCode);
         switch (keyCode) {
             case "ArrowLeft":
@@ -112,7 +114,9 @@ class GameWorld {
             case "ArrowDown":
                 this.stick.downPower()
                 break;
-            case "Space":case "Enter":
+            case "Space": case "Enter":
+                // let take = this.bot.takeShot();
+                // this.stick.shoot(take.angle, take.power)
                 this.stick.shoot()
                 this.lockInput = true;
                 this.stick.power = 0;
@@ -148,10 +152,10 @@ class GameWorld {
             this.namePlayerWinner2.innerHTML="Player2"
             this.displayWinner.style.display = "block";
             return true;
-        }else{
+        } else {
             return false;
         }
-        
+
 
     }
 

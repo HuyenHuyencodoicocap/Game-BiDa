@@ -1,28 +1,28 @@
 const BallColor = Object.freeze({
-    WHITE:  Symbol("white"),
-    RED:   Symbol("red"),
+    WHITE: Symbol("white"),
+    RED: Symbol("red"),
     YELLOW: Symbol("yellow"),
 });
 class Ball {
     constructor(position, color = BallColor.WHITE) {
-        
+
         this.position = position; // Vector2D
         this.color = color; // Chỉ nhận 3 màu hợp lệ kiểu enum
         this.isInHole = false; // Bóng có vào lỗ không kiểu bool
         this.vantoc = new Vector2D(0, 0); // Vận tốc ban đầu
 
-        if(color==BallColor.YELLOW){
-            this.img=PoolGame.getInstance().assets.images["ball_Yellow"];
-        }else if(color== BallColor.RED){
-            this.img=PoolGame.getInstance().assets.images["ball_Red"];
-        }else{
-            this.img=PoolGame.getInstance().assets.images["ball_White"];
+        if (color == BallColor.YELLOW) {
+            this.img = PoolGame.getInstance().assets.images["ball_Yellow"];
+        } else if (color == BallColor.RED) {
+            this.img = PoolGame.getInstance().assets.images["ball_Red"];
+        } else {
+            this.img = PoolGame.getInstance().assets.images["ball_White"];
             this.color = BallColor.WHITE; // Chỉ nhận 3 màu hợp lệ kiểu enum
         }
-        Ball.origin  = Object.freeze(new Vector2D(this.img.width/2,this.img.height/2));
+        Ball.origin = Object.freeze(new Vector2D(this.img.width / 2, this.img.height / 2));
     }
 
-    update(deltaTime) { 
+    update(deltaTime) {
         if (this.isMoving()) {
             console.log(this.vantoc)
             this.position = this.position.add(this.vantoc.multiply(deltaTime));// Nếu đang di chuyển lấy vị trí hiện tại cộng thêm v*t(quãng đường vừa di chuyển deltatime)
@@ -32,7 +32,7 @@ class Ball {
 
     draw() {
         // Code hàm vẽ bóng tại đây
-        if(this.isInHole==false)PoolGame.getInstance().myCanvas.DrawImage(this.img,this.position,0,Ball.origin);
+        if (this.isInHole == false) PoolGame.getInstance().myCanvas.DrawImage(this.img, this.position, 0, Ball.origin);
     }
 
     updateMoving(deltaTime) { // update vị trí của bóng
@@ -45,22 +45,22 @@ class Ball {
     }
 
     CollideBall(that) {
-       // Code bóng va chạm nhau ở đây
-       let distance = this.position.subtract(that.position).magnitude();
-       let ballRadius = this.img.width / 2;
-       
-       if (distance <= ballRadius * 2) { // Nếu hai bóng chạm nhau
-           let normal = this.position.subtract(that.position).normalize();
-           let relativeVelocity = this.vantoc.subtract(that.vantoc);
-           let speed = relativeVelocity.dot(normal);
-   
-           if (speed > 0) return; // Bóng đang tách xa nhau, không xử lý
-   
-           // Công thức tính vận tốc sau va chạm đàn hồi
-           let impulse = normal.multiply(-2 * speed);
-           this.vantoc = this.vantoc.add(impulse);
-           that.vantoc = that.vantoc.subtract(impulse);
-       }
+        // Code bóng va chạm nhau ở đây
+        let distance = this.position.subtract(that.position).magnitude();
+        let ballRadius = this.img.width / 2;
+
+        if (distance <= ballRadius * 2) { // Nếu hai bóng chạm nhau
+            let normal = this.position.subtract(that.position).normalize();
+            let relativeVelocity = this.vantoc.subtract(that.vantoc);
+            let speed = relativeVelocity.dot(normal);
+
+            if (speed > 0) return; // Bóng đang tách xa nhau, không xử lý
+
+            // Công thức tính vận tốc sau va chạm đàn hồi
+            let impulse = normal.multiply(-2 * speed);
+            this.vantoc = this.vantoc.add(impulse);
+            that.vantoc = that.vantoc.subtract(impulse);
+        }
     }
 
     CollideWall() {
@@ -99,6 +99,15 @@ class Ball {
 
     isMoving() {
         return !this.isInHole && this.vantoc.magnitude() > 0;
+    }
+    angleToBall(that) {
+        let direction = that.position.subtract(this.position);
+        return Math.atan2(-direction.y, direction.x); // Đảo y để giữ hệ toán học
+    }
+
+    angleToHole(hole) {
+        let direction = hole.subtract(this.position);
+        return Math.atan2(-direction.y, direction.x); // Đảo y để giữ hệ toán học
     }
 }
 
