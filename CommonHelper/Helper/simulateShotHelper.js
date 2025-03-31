@@ -1,14 +1,14 @@
 
 function simulateShot(angle, power, whiteBall, balls, holes) {
-    let simulatedWhiteBall = new Ball(whiteBall.position.clone(), whiteBall.color);
+    let simulatedWhiteBall = new Ball(whiteBall.position.copy(), whiteBall.color);
     simulatedWhiteBall.vantoc = new Vector2D(
         Math.cos(angle * Math.PI / 180) * power,
         Math.sin(angle * Math.PI / 180) * power
     );
 
     let simulatedBalls = balls.map(ball => {
-        let clone = new Ball(ball.position.clone(), ball.color);
-        clone.vantoc = ball.vantoc.clone();
+        let clone = new Ball(ball.position.copy(), ball.color);
+        clone.vantoc = ball.vantoc.copy();
         return clone;
     });
 
@@ -48,7 +48,7 @@ function simulateShot(angle, power, whiteBall, balls, holes) {
     let minDistance = Infinity;
     for (let ball of simulatedBalls) {
         for (let hole of holes) {
-            let distance = ball.position.distanceTo(hole.position);
+            let distance = ball.position.distanceFrom(hole);
             if (distance < minDistance) {
                 minDistance = distance;
             }

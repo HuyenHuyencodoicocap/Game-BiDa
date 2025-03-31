@@ -14,7 +14,7 @@ class Bot {
             balls: balls,
             holes: new Board().HolePosition
         });
-        let special = specialCase.getSpecialCase()
+        let special = specialCase.getSpecialCase(PoolGame.getInstance().gameWorld.whiteBall)
         if (special.isBool) {
             return special.shotInfo
         }

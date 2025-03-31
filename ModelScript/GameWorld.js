@@ -17,7 +17,7 @@ class GameWorld {
         this.size = new Vector2D(this.width, this.height);
 
         this.turn = 1; // Lượt đánh hiện tại
-        this.isBotOn = false; // Chế độ bot
+        this.isBotOn = true; // Chế độ bot
         // this.score = 0;
 
         this.currentNumberBallRed = this.redBall.length; // Số bi đỏ còn lại
@@ -112,12 +112,17 @@ class GameWorld {
                 this.stick.downPower()
                 break;
             case "Space": case "Enter":
-                // let take = this.bot.takeShot();
-                // this.stick.shoot(take.angle, take.power)
-                this.stick.shoot()
+                if (this.isBotOn) {
+                    let bestShot = this.bot.takeShot();
+                    this.stick.shoot(bestShot.angle, bestShot.power);
+                } else {
+                    this.stick.shoot();
+                }
+                this.stick.shoot();
                 this.lockInput = true;
                 this.stick.power = 0;
                 break;
+
             default:
                 break;
         }
