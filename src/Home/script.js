@@ -20,12 +20,14 @@
         // Đợi 5 giây trước khi chuyển đến game.html
         setTimeout(function () {
             if (mode === 'pvp') {
-                window.location.href = 'game.html?mode=pvp';
+                window.location.href = '../Game/index.html?mode=pvp';
             } else {
-                window.location.href = 'game.html?mode=bot';
+                window.location.href = '../Game/index.html?mode=bot';
             }
         }, 5000);
+        
     }
+    
     
 
     

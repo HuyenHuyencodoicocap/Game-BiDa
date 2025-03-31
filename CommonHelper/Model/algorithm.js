@@ -1,5 +1,5 @@
-import simulateShot from "../Helper/simulateShotHelper";
-import { BallColor } from "../../ModelScript/Ball";
+// import simulateShot from "../Helper/simulateShotHelper";
+// import { BallColor } from "../../ModelScript/Ball";
 class GeneticAlgorithm {
     constructor(populationSize, mutationRate, simulation) {
         this.populationSize = populationSize;
@@ -131,5 +131,5 @@ class AITrainer {
     }
 }
 
-export default AITrainer;
+AITrainer;
 

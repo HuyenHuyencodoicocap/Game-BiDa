@@ -10,14 +10,14 @@ class GameWorld {
 
         this.stick = new Stick();
         this.board = new Board();
-        //this.bot = new Bot()
+        // this.bot = new Bot();
 
         this.width = this.board.width;
         this.height = this.board.height;
         this.size = new Vector2D(this.width, this.height);
 
-        this.turn = 1; // Lượt đánh hiện tại
-        this.isBotOn = false; // Chế độ bot
+        this.turn = 2; // Lượt đánh hiện tại
+        this.isBotOn = true; // Chế độ bot
         // this.score = 0;
 
         this.currentNumberBallRed = this.redBall.length; // Số bi đỏ còn lại
@@ -30,14 +30,14 @@ class GameWorld {
 
         this.player1 = document.getElementById("player1")// người chơi 1
         this.player2 = document.getElementById("player2")
-        this.player1_score=0;
-        this.player2_score=0;
-        this.player1_score_elem=document.getElementById("player1_score");// Hiển thị điểm
-        this.player2_score_elem=document.getElementById("player2_score");
+        this.player1_score = 0;
+        this.player2_score = 0;
+        this.player1_score_elem = document.getElementById("player1_score");// Hiển thị điểm
+        this.player2_score_elem = document.getElementById("player2_score");
 
-        this.namePlayerWinner1=document.getElementById("namePlayerWinner");// Hiển thị người chơi chiến thắng
-        this.namePlayerWinner2=document.getElementById("namePlayerWinner");
-        this.displayWinner=document.getElementById("displayWinner");
+        this.namePlayerWinner1 = document.getElementById("namePlayerWinner");// Hiển thị người chơi chiến thắng
+        this.namePlayerWinner2 = document.getElementById("namePlayerWinner");
+        this.displayWinner = document.getElementById("displayWinner");
     }
 
     update() {
@@ -115,12 +115,17 @@ class GameWorld {
                 this.stick.downPower()
                 break;
             case "Space": case "Enter":
-                // let take = this.bot.takeShot();
-                // this.stick.shoot(take.angle, take.power)
-                this.stick.shoot()
+                if (this.isBotOn) {
+                    let bestShot = this.bot.takeShot();
+                    this.stick.shoot(bestShot.angle, bestShot.power);
+                } else {
+                    this.stick.shoot();
+                }
+                this.stick.shoot();
                 this.lockInput = true;
                 this.stick.power = 0;
                 break;
+
             default:
                 break;
         }
@@ -143,13 +148,13 @@ class GameWorld {
     }
 
     isWin() {
-        if(this.player1_score==5){
-            this.namePlayerWinner1.innerHTML="Player1"
+        if (this.player1_score == 5) {
+            this.namePlayerWinner1.innerHTML = "Player1"
             this.displayWinner.style.display = "block";
             return true;
         }
-        else if(this.player2_score==5){
-            this.namePlayerWinner2.innerHTML="Player2"
+        else if (this.player2_score == 5) {
+            this.namePlayerWinner2.innerHTML = "Player2"
             this.displayWinner.style.display = "block";
             return true;
         } else {
