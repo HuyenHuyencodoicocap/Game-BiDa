@@ -106,7 +106,7 @@ class SpecialCase {
         return { isBool: false };
     }
     // Bi mục tiêu nằm sát băng, gần lỗ.,Chỉ cần đánh bi chủ chạm vào bi mục tiêu, bi mục tiêu sẽ đập vào băng và lăn vào lỗ theo hướng dễ đoán.
-    isSingleBankShot() {
+    isSingleBankShot(whiteBall) {
         for (let ball of this.balls) {
             if (this.isBlockedToTarget(whiteBall, ball)) continue; // Bi trắng bị chắn
             for (let hole of this.board.HolePosition) {
@@ -126,7 +126,7 @@ class SpecialCase {
     //  Bi mục tiêu không nằm trên đường thẳng đến lỗ nhưng có thể đánh đôn(bật băng) để đi vào.
 
     // Đánh bi mục tiêu vào băng với góc phản xạ hợp lý để nó rơi vào lỗ.
-    isClearBankShot() {
+    isClearBankShot(whiteBall) {
         for (let ball of this.balls) {
             if (this.isBlockedToTarget(whiteBall, ball)) continue; // Bi trắng bị chắn
             for (let hole of this.board.HolePosition) {
@@ -149,11 +149,11 @@ class SpecialCase {
     // Thay vì đánh trực tiếp, ta dùng bi trung gian để đẩy bi mục tiêu vào lỗ.
     isEasyCombo() {
         for (let ball of this.balls) {
-            existBall = this.balls.filter(b => b !== ball);
+            let existBall = this.balls.filter(b => b !== ball);
             for (let secondaryBall of existBall) {
                 for (let hole of this.board.HolePosition) {
-                    let angle = Math.abs(ball.angleTo(secondaryBall) - ball.angleTo(hole));
-                    if (angle < 0.3 && this.targetBall.position.distanceFrom(this.secondaryBall.position) < 20) {
+                    let angle = Math.abs(ball.angleToBall(secondaryBall) - ball.angleToHole(hole));
+                    if (angle < 0.3 && this.targetBall?.position.distanceFrom(this.secondaryBall.position) < 20) {
                         return {
                             isBool: true,
                             shotInfo: this.calculateAngle("easyCombo"),

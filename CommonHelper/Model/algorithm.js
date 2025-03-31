@@ -106,28 +106,27 @@ class AITrainer {
         if (bestMCTSShot.successRate > 0.6) {
             return bestMCTSShot;
         }
-
-        return this.findDefensiveShot();
+        return { angle: 0, power: 0 }
     }
 
-    findDefensiveShot() {
-        let bestDefensiveShot = { angle: 0, power: 500, distanceToHole: 0 };
+    // findDefensiveShot() {
+    //     let bestDefensiveShot = { angle: 0, power: 500, distanceToHole: 0 };
 
-        for (let shot of this.geneticAlgorithm.population) {
-            let result = simulateShot(shot.angle, shot.power, this.state.whiteBall, this.state.balls, this.state.holes);
-            let opponentBall = this.state.balls.find(b => b.color === BallColor.RED);
-            let distanceToOpponent = opponentBall ? this.calculateDistance(result.whiteBallPosition, opponentBall.position) : 0;
+    //     for (let shot of this.geneticAlgorithm.population) {
+    //         let result = simulateShot(shot.angle, shot.power, this.state.whiteBall, this.state.balls, this.state.holes);
+    //         let opponentBall = this.state.balls.find(b => b.color === BallColor.RED);
+    //         let distanceToOpponent = opponentBall ? this.calculateDistance(result.whiteBallPosition, opponentBall.position) : 0;
 
-            if (!result.success && (result.distanceToHole > bestDefensiveShot.distanceToHole || distanceToOpponent < 50)) {
-                bestDefensiveShot = { ...shot, distanceToHole: result.distanceToHole };
-            }
-        }
-        return bestDefensiveShot;
-    }
+    //         if (!result.success && (result.distanceToHole > bestDefensiveShot.distanceToHole || distanceToOpponent < 50)) {
+    //             bestDefensiveShot = { ...shot, distanceToHole: result.distanceToHole };
+    //         }
+    //     }
+    //     return bestDefensiveShot;
+    // }
 
-    calculateDistance(pos1, pos2) {
-        return Math.sqrt((pos1.x - pos2.x) ** 2 + (pos1.y - pos2.y) ** 2);
-    }
+    // calculateDistance(pos1, pos2) {
+    //     return Math.sqrt((pos1.x - pos2.x) ** 2 + (pos1.y - pos2.y) ** 2);
+    // }
 }
 
 
