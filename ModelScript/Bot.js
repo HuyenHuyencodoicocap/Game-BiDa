@@ -1,5 +1,4 @@
-import SpecialCase from "../CommonHelper/Model/specialCase";
-import AITrainer from "../CommonHelper/Model/algorithm";
+
 class Bot {
     constructor() {
     }

@@ -49,26 +49,26 @@ class Ball {
     CollideBall(that) {
         let distance = this.position.subtract(that.position).magnitude();
         let ballRadius = this.img.width / 2;
-    
-        if (distance <= ballRadius * 2) { 
+
+        if (distance <= ballRadius * 2) {
             let normal = this.position.subtract(that.position).normalize();
             let relativeVelocity = this.vantoc.subtract(that.vantoc);
             let speed = relativeVelocity.dot(normal);
-    
+
             if (speed > 0) return; // Nếu bóng đang tách xa nhau thì không xử lý
 
             // 🔹 Công thức va chạm hai vật có cùng khối lượng
             let newVantoc1 = this.vantoc.subtract(normal.multiply(speed));
             let newVantoc2 = that.vantoc.add(normal.multiply(speed));
-    
+
             // Áp dụng ma sát từ từ
             let friction = 0.99; // Giảm tốc nhẹ dần
             this.vantoc = newVantoc1.multiply(friction);
             that.vantoc = newVantoc2.multiply(friction);
         }
     }
-    
-    
+
+
 
     CollideWall() {
         //Code bóng va chạm thành bàn ở đây
@@ -98,7 +98,7 @@ class Ball {
 
             if (distance <= board.HoleRadius - radius) {
                 this.isInHole = true;
-                
+
                 if (this.color === BallColor.WHITE) {
                     console.log("⚠️ Bóng trắng đã vào lỗ!");
                     // Xử lý logic khi bóng trắng vào lỗ, ví dụ:
@@ -110,7 +110,7 @@ class Ball {
             }
         }
     }
-    
+
 
 
     isMoving() {
