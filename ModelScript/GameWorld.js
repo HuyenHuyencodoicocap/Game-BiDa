@@ -10,13 +10,13 @@ class GameWorld {
 
         this.stick = new Stick();
         this.board = new Board();
-        this.bot = new Bot()
+        // this.bot = new Bot();
 
         this.width = this.board.width;
         this.height = this.board.height;
         this.size = new Vector2D(this.width, this.height);
 
-        this.turn = 1; // Lượt đánh hiện tại
+        this.turn = 2; // Lượt đánh hiện tại
         this.isBotOn = true; // Chế độ bot
         // this.score = 0;
 
@@ -32,8 +32,12 @@ class GameWorld {
         this.player2 = document.getElementById("player2")
         this.player1_score = 0;
         this.player2_score = 0;
-        this.player1_score_elem = document.getElementById("player1_score");
+        this.player1_score_elem = document.getElementById("player1_score");// Hiển thị điểm
         this.player2_score_elem = document.getElementById("player2_score");
+
+        this.namePlayerWinner1 = document.getElementById("namePlayerWinner");// Hiển thị người chơi chiến thắng
+        this.namePlayerWinner2 = document.getElementById("namePlayerWinner");
+        this.displayWinner = document.getElementById("displayWinner");
     }
 
     update() {
@@ -50,7 +54,6 @@ class GameWorld {
             this.AllBalls[i].CollideWall();
             this.AllBalls[i].CollideHole();
         }
-
         if (this.lockInput) {
             let isNextTurn = true;
             for (let ball of this.AllBalls) {
@@ -78,8 +81,6 @@ class GameWorld {
 
         }
 
-
-
         this.isWin();
     }
     draw() {
@@ -90,6 +91,8 @@ class GameWorld {
             this.AllBalls[i].draw();
         }
         this.stick.draw();
+
+
     }
 
     handleInput(event) {
@@ -146,9 +149,13 @@ class GameWorld {
 
     isWin() {
         if (this.player1_score == 5) {
+            this.namePlayerWinner1.innerHTML = "Player1"
+            this.displayWinner.style.display = "block";
             return true;
         }
         else if (this.player2_score == 5) {
+            this.namePlayerWinner2.innerHTML = "Player2"
+            this.displayWinner.style.display = "block";
             return true;
         } else {
             return false;
@@ -197,24 +204,6 @@ class GameWorld {
                 index++;
             }
         }
-    }
-
-    onWhiteInHole() {
-        console.log("Bi trắng đã rơi vào lỗ!");
-
-        // Đặt lại vị trí bi trắng
-        this.whiteBall = new Ball(new Vector2D(410, 825 / 2), BallColor.WHITE);
-
-        // Cập nhật lại danh sách bóng
-        this.AllBalls = [...this.redBall, ...this.yellowBall, this.whiteBall];
-
-        // Nếu đang trong chế độ chơi với bot, có thể thêm logic xử lý tùy theo yêu cầu
-        if (this.isBotOn && this.turn === 2) {
-            this.changeTurn(); // Chuyển lượt nếu bot đang chơi
-        }
-
-        // Chuyển lượt đánh vì đánh lỗi
-        this.changeTurn();
     }
 
 }

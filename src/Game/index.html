@@ -35,6 +35,7 @@
 
     <!-- <img id="imageCanvas" src="../../Assets/Image/background_Game.png" style="display: none;"> -->
     <canvas id="myCanvas" style="width: 100vw;height: 78vh;"></canvas>
+    <h2 id="displayWinner"><span id="namePlayerWinner">Player 1</span> winner</h2>
 
 
 
@@ -50,7 +51,12 @@
     <script src="../../ModelScript/Board.js"></script>
     <script src="../../ModelScript/Ball.js"></script>
     <script src="../../ModelScript/Assets.js"></script>
-    <script>
+    <script src="../../CommonHelper/Helper/simulateShotHelper.js"></script>
+    <script src="../../CommonHelper/Model/algorithm.js"></script>
+    <script src="../../CommonHelper/Model/specialCase.js"></script>
+
+    <script >
+
         new PoolGame().init();
     </script>
 
