@@ -1,5 +1,5 @@
 
-export default class SpecialCase {
+class SpecialCase {
     constructor(balls, board) {
         this.balls = balls;
         this.board = board;

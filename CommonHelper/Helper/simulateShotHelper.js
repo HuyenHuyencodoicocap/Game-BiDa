@@ -1,5 +1,5 @@
-import { BallColor } from "../../ModelScript/Ball";
-export default function simulateShot(angle, power, whiteBall, balls, holes) {
+
+function simulateShot(angle, power, whiteBall, balls, holes) {
     let simulatedWhiteBall = new Ball(whiteBall.position.clone(), whiteBall.color);
     simulatedWhiteBall.vantoc = new Vector2D(
         Math.cos(angle * Math.PI / 180) * power,

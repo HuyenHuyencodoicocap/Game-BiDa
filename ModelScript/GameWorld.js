@@ -10,7 +10,7 @@ class GameWorld {
 
         this.stick = new Stick();
         this.board = new Board();
-        //this.bot = new Bot()
+        this.bot = new Bot()
 
         this.width = this.board.width;
         this.height = this.board.height;
@@ -50,7 +50,7 @@ class GameWorld {
             this.AllBalls[i].CollideWall();
             this.AllBalls[i].CollideHole();
         }
-        
+
         if (this.lockInput) {
             let isNextTurn = true;
             for (let ball of this.AllBalls) {
