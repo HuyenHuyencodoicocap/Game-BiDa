@@ -10,7 +10,7 @@ class GameWorld {
 
         this.stick = new Stick();
         this.board = new Board();
-        // this.bot = new Bot();
+        this.bot = new Bot();
 
         this.width = this.board.width;
         this.height = this.board.height;
@@ -103,7 +103,15 @@ class GameWorld {
         console.log(keyCode);
         switch (keyCode) {
             case "ArrowLeft":
-                this.stick.downAngle()
+                if (this.isBotOn) {
+                    let bestShot = this.bot.takeShot();
+                    console.log(bestShot);
+
+                    //this.stick.shootAI(bestShot.angle, bestShot.power);
+                    this.stick.angle = bestShot.angle
+                    this.stick.power = bestShot.power % 1000
+                }
+                else { this.stick.downAngle() }
                 break;
             case "ArrowRight":
                 this.stick.upAngle()
@@ -115,12 +123,12 @@ class GameWorld {
                 this.stick.downPower()
                 break;
             case "Space": case "Enter":
-                if (this.isBotOn) {
-                    let bestShot = this.bot.takeShot();
-                    this.stick.shoot(bestShot.angle, bestShot.power);
-                } else {
-                    this.stick.shoot();
-                }
+                // if (this.isBotOn) {
+                //     let bestShot = this.bot.takeShot();
+                //     this.stick.shoot(bestShot.angle, bestShot.power);
+                // } else {
+                //     this.stick.shoot();
+                // }
                 this.stick.shoot();
                 this.lockInput = true;
                 this.stick.power = 0;

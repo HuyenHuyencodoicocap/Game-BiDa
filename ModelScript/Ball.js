@@ -5,7 +5,7 @@ const BallColor = Object.freeze({
 });
 class Ball {
     constructor(position, color = BallColor.WHITE) {
-
+        this.id = this.generateId()
         this.position = position; // Vector2D
         this.color = color; // Chỉ nhận 3 màu hợp lệ kiểu enum
         this.isInHole = false; // Bóng có vào lỗ không kiểu bool
@@ -24,7 +24,7 @@ class Ball {
 
     update(deltaTime) {
         if (this.isMoving()) {
-            console.log(this.vantoc)
+            //console.log(this.vantoc)
             this.position = this.position.add(this.vantoc.multiply(deltaTime));// Nếu đang di chuyển lấy vị trí hiện tại cộng thêm v*t(quãng đường vừa di chuyển deltatime)
             this.updateMoving(deltaTime);
         }
@@ -100,9 +100,9 @@ class Ball {
                 this.isInHole = true;
 
                 if (this.color === BallColor.WHITE) {
-                    console.log("⚠️ Bóng trắng đã vào lỗ!");
+                    //console.log("⚠️ Bóng trắng đã vào lỗ!");
                     // Xử lý logic khi bóng trắng vào lỗ, ví dụ:
-                    PoolGame.getInstance().gameWorld.onWhiteInHole();
+                    //PoolGame.getInstance().gameWorld.onWhiteInHole();
                 }
 
 
@@ -111,6 +111,13 @@ class Ball {
         }
     }
 
+    generateId() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0,
+                v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
 
 
     isMoving() {
