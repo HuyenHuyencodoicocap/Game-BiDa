@@ -76,14 +76,14 @@ function simulateShot(angle, power, whiteBall, balls, holes) {
 
     if (whiteBallInHole === true || countRedBallHole > 0) {
         return {
-            success: false, message: `Phạm quy`, whiteBallPosition: newWhiteBall?.position.copy(), distanceToHole: 0, countBallToHole: { whiteBallInHole: true, countRedBallHole: countRedBallHole, countYellowBallHole: countYellowBallHole }
+            success: false, message: `Phạm quy`, whiteBallPosition: newWhiteBall?.position.copy(), distanceToHole: 0, countBallToHole: { whiteBallInHole: whiteBallInHole, countRedBallHole: countRedBallHole, countYellowBallHole: countYellowBallHole }
         };
 
     }
     else {
         if (countYellowBallHole > 0) {
             return {
-                success: false, message: `Thành công`, whiteBallPosition: newWhiteBall?.position.copy(), distanceToHole: 0, countBallToHole: { whiteBallInHole: true, countRedBallHole: countRedBallHole, countYellowBallHole: countYellowBallHole }
+                success: true, message: `Thành công`, whiteBallPosition: newWhiteBall?.position.copy(), distanceToHole: 0, countBallToHole: { whiteBallInHole: whiteBallInHole, countRedBallHole: countRedBallHole, countYellowBallHole: countYellowBallHole }
             };
         }
     }
