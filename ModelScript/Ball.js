@@ -10,6 +10,7 @@ class Ball {
         this.color = color; // Chỉ nhận 3 màu hợp lệ kiểu enum
         this.isInHole = false; // Bóng có vào lỗ không kiểu bool
         this.vantoc = new Vector2D(0, 0); // Vận tốc ban đầu
+        this.firstCollide=null;
 
         if (color == BallColor.YELLOW) {
             this.img = PoolGame.getInstance().assets.images["ball_Yellow"];
@@ -51,6 +52,12 @@ class Ball {
         let ballRadius = this.img.width / 2;
 
         if (distance <= ballRadius * 2) {
+            if(this.firstCollide==null){
+                this.firstCollide=that;
+            }
+            if(that.firstCollide==null){
+                that.firstCollide=this;
+            }
             let normal = this.position.subtract(that.position).normalize();
             let relativeVelocity = this.vantoc.subtract(that.vantoc);
             let speed = relativeVelocity.dot(normal);
@@ -131,6 +138,9 @@ class Ball {
     angleToHole(hole) {
         let direction = hole.subtract(this.position);
         return Math.atan2(-direction.y, direction.x); // Đảo y để giữ hệ toán học
+    }
+    resetFirstCollide(){
+        this.firstCollide=null;
     }
 }
 
