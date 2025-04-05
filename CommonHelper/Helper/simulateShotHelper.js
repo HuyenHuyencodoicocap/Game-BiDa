@@ -18,9 +18,9 @@ function simulateShot(angle, power, whiteBall, balls, holes) {
     });
     simulatedBalls.push(simulatedWhiteBall)
 
-    let maxSteps = 500;
+    let maxSteps = 150;
     let i = 0
-    let deltaTime = Math.random() * (18 - 15) + 15;
+    let deltaTime = 24;
     let haveBallInHole = [];
 
 

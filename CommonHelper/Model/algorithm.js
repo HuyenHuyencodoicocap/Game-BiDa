@@ -10,7 +10,7 @@ class GeneticAlgorithm {
     initializePopulation() {
         this.population = Array.from({ length: this.populationSize }, () => ({
             angle: Math.random() * 360,
-            power: Math.random() * 1800 + 200
+            power: Math.random() * 200
         }));
     }
 
@@ -65,7 +65,7 @@ class GeneticAlgorithm {
         if (Math.random() < this.mutationRate) {
             // Sử dụng phần trăm tương đối cho cả góc và lực
             const angleRange = 10; // ±5% của 360 độ
-            const powerRange = 200; // ±10% của khoảng lực (200-2000)
+            const powerRange = 20; // ±10% của khoảng lực (0-200)
 
             shot.angle += (Math.random() - 0.5) * angleRange;
             // Giữ góc trong khoảng 0-360
@@ -73,7 +73,7 @@ class GeneticAlgorithm {
 
             shot.power += (Math.random() - 0.5) * powerRange;
             // Giữ lực trong khoảng hợp lệ
-            shot.power = Math.max(200, Math.min(2000, shot.power));
+            shot.power = Math.max(0, Math.min(200, shot.power));
         }
         return shot;
     }
@@ -138,7 +138,7 @@ class MonteCarloTreeSearch {
         return bestShot;
     }
 
-    simulateShot(angle, power, simulations = 10) { // Tăng lên 10 lần mô phỏng, có thể điều chỉnh
+    simulateShot(angle, power, simulations = 3) { // Tăng lên 10 lần mô phỏng, có thể điều chỉnh
         let success = 0;
         let totalDistance = 0;
         for (let i = 0; i < simulations; i++) {
@@ -162,8 +162,9 @@ class AITrainer {
     }
 
     train() {
+        let cur = Date.now()
         // Tìm cú đánh tốt nhất từ thuật toán di truyền
-        let bestGeneticShot = this.geneticAlgorithm.run(10);
+        let bestGeneticShot = this.geneticAlgorithm.run(8);
 
         // Tìm cú đánh tốt nhất từ MCTS
         let bestMCTSShot = this.mcts.findBestShot(this.geneticAlgorithm.population);
@@ -175,13 +176,14 @@ class AITrainer {
         if (bestDefensiveShot.distanceToHole > bestGeneticShot.distanceToHole && bestDefensiveShot.distanceToHole > bestMCTSShot.distanceToHole) {
             return bestDefensiveShot;
         }
+        console.log("Thời gian tìm kiếm cú đánh tốt nhất:", Date.now() - cur, "ms");
 
         // Nếu cú đánh từ MCTS tốt hơn thì chọn cú đánh đó
         return bestMCTSShot.successRate > 0.6 ? bestMCTSShot : bestGeneticShot;
     }
 
     findDefensiveShot() {
-        let bestDefensiveShot = { angle: 0, power: 500, distanceToHole: Infinity, score: -Infinity };
+        let bestDefensiveShot = { angle: 0, power: 50, distanceToHole: Infinity, score: -Infinity };
 
         for (let shot of this.geneticAlgorithm.population) {
             let result = simulateShot(shot.angle, shot.power, this.state.whiteBall, this.state.balls, this.state.holes);
