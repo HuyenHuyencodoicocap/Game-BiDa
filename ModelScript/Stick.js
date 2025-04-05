@@ -26,6 +26,15 @@ class Stick {
         this.power = 0;
         this.aimLine=this.calculateAimLine(this.angle);
     }
+    setPower(power){
+        this.power = power;
+        this.power = Math.max(0,this.power);
+        this.power = Math.min(200,this.power);
+    }
+    setAngle(angle){
+        this.angle=angle;
+        this.aimLine=this.calculateAimLine(this.angle);
+    }
     upPower() {
         this.power += 4;
         if (this.power > 200) this.power = 200;
@@ -44,17 +53,21 @@ class Stick {
         this.angle += 360;
         this.angle %= 360;
     }
-    shoot(angle, power) {
+    shoot(angle = this.angle, power = this.power) {
+        this.setAngle(angle)
+        this.setPower(power)
+        if(this.power<=0)return;
         let dx = power / 50.0 * Math.cos(angle * Math.PI / 180);
         let dy = power / 50.0 * Math.sin(angle * Math.PI / 180);
         this.whiteBall.vantoc = new Vector2D(dx, dy);
+        PoolGame.getInstance().gameWorld.gamePolicy.lockInput=true;
     }
-    shoot() {
-        // Hàm bắn bóng
-        let dx = this.power / 50.0 * Math.cos(this.angle * Math.PI / 180);
-        let dy = this.power / 50.0 * Math.sin(this.angle * Math.PI / 180);
-        this.whiteBall.vantoc = new Vector2D(dx, dy);
-    }
+    // shoot() {
+    //     // Hàm bắn bóng
+    //     let dx = this.power / 50.0 * Math.cos(this.angle * Math.PI / 180);
+    //     let dy = this.power / 50.0 * Math.sin(this.angle * Math.PI / 180);
+    //     this.whiteBall.vantoc = new Vector2D(dx, dy);
+    // }
 
     calculateAimLine(angle) {
         let tempPower = 1;

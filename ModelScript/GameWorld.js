@@ -31,6 +31,9 @@ class GameWorld {
     }
 
     update() {
+        if (this.gamePolicy.isFoul) {
+            return;
+        }
         // Cập nhật trạng thái game, vị trí bóng, kiểm tra va chạm, v.v.
         let curTime = Date.now();
         let deltaTime = curTime - this.lastTime;
@@ -64,7 +67,7 @@ class GameWorld {
 
     handleKeyInput(event) {
         if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
-        if (this.gamePolicy.turn == 2 && this.isBotOn) return;
+        if (this.gamePolicy.turn == 2 && this.isBotOn) return; //lượt bot
         var keyCode = event.code;
         if (!this.gamePolicy.isFoul) {
             switch (keyCode) {
@@ -81,7 +84,7 @@ class GameWorld {
                     this.stick.downPower()
                     break;
                 case "Space": case "Enter":
-                    if (this.stick.power == 0) return;
+                    if (this.stick.power == 0) break;
                     this.stick.shoot();
                     this.gamePolicy.lockInput = true;
                     break;
@@ -103,6 +106,17 @@ class GameWorld {
                     this.whiteBall.position.y += 10;
                     break;
                 case "Space": case "Enter":
+                    let validate = true;
+                    for (let ball of this.AllBalls) {
+                        if (ball.isInHole) continue;
+                        if (ball == this.whiteBall) continue;
+                        if (this.whiteBall.CollideBall(ball)) {
+                            console.log(ball)
+                            validate = false;
+                        }
+                    }
+                    if (this.whiteBall.CollideWall() || this.whiteBall.CollideHole()) validate = false;
+                    if (!validate) break;
                     this.gamePolicy.isFoul = false;
                     this.stick.resetPower();
                     break;
@@ -112,9 +126,61 @@ class GameWorld {
         }
     }
     handleMouseInput(event) {
-        // let type = event.type;
+        if (this.gamePolicy.lockInput) return; // Nếu bóng đang lăn thì không nhận input
+        if (this.gamePolicy.turn == 2 && this.isBotOn) return; //lượt bot
+        let type = event.type;
         // console.log(event)
         // console.log(type)
+        if (!this.gamePolicy.isFoul) {
+            switch (type) {
+                case "mousedown":
+                    this.mousedownPos = new Vector2D(event.x, event.y);
+                    break;
+                case "mousemove":
+                    if (!this.mousedownPos) break;
+                    let temp = this.mousedownPos.subtract(new Vector2D(event.x, event.y));
+                    this.stick.setAngle(-temp.angle() / Math.PI * 180);
+                    this.stick.setPower(temp.magnitude() - 20);
+                    break;
+                case "mouseup":
+                    if (this.stick.power == 0) break;
+                    this.stick.shoot();
+                    this.mousedownPos = null;
+                    // this.gamePolicy.lockInput = true;
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (type) {
+                case "mousemove":
+                    if (event.target != PoolGame.getInstance().myCanvas.canvas) break;
+                    let rect = event.target.getBoundingClientRect();
+                    let x = event.clientX - rect.left; //x position within the element.
+                    let y = event.clientY - rect.top;  //y position within the element.
+                    this.whiteBall.position = new Vector2D(x, y)
+                        .subtract(PoolGame.getInstance().myCanvas.getOffset())
+                        .divide(PoolGame.getInstance().myCanvas.getScale())
+                    break;
+                case "mouseup":
+                    let validate = true;
+                    for (let ball of this.AllBalls) {
+                        if (ball.isInHole) continue;
+                        if (ball == this.whiteBall) continue;
+                        if (this.whiteBall.CollideBall(ball)) {
+                            console.log(ball)
+                            validate = false;
+                        }
+                    }
+                    if (this.whiteBall.CollideWall() || this.whiteBall.CollideHole()) validate = false;
+                    if (!validate) break;
+                    this.gamePolicy.isFoul = false;
+                    this.stick.resetPower();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
     botProcess() {
         if (this.gamePolicy.isFoul) this.gamePolicy.isFoul = false;
