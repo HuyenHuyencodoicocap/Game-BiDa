@@ -5,6 +5,7 @@ class GamePolicy {
         this.lockInput = false;
         this.firstTurn=true;
         this.goHole=false;
+        this.isFoul=false;
 
         this.player1_color = BallColor.YELLOW;
         this.player2_color = BallColor.RED;
@@ -55,9 +56,10 @@ class GamePolicy {
             || (!this.matchColor(this.gameWorld.whiteBall.firstCollide.color) && !this.firstTurn)
             || this.gameWorld.whiteBall.isInHole
         ) {
-            this.gameWorld.whiteBall.position = this.gameWorld.initWhiteBallPos;
+            this.gameWorld.whiteBall.position = new Vector2D(this.gameWorld.initWhiteBallPos.x,this.gameWorld.initWhiteBallPos.y);
             this.gameWorld.whiteBall.isInHole = false;
             this.gameWorld.whiteBall.vantoc = new Vector2D(0, 0);
+            this.isFoul=true;
         }
         if(
             !this.goHole

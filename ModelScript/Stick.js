@@ -8,7 +8,6 @@ class Stick {
 
     draw() {
         // Code vẽ gậy lên màn hình
-        if (PoolGame.getInstance().gameWorld.gamePolicy.lockInput) return;
         this.origin = new Vector2D(this.img.width + this.whiteBall.origin.x + this.power, this.img.height / 2);
         PoolGame.getInstance().myCanvas.DrawImage(
             this.img,

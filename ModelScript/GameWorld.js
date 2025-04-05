@@ -52,36 +52,63 @@ class GameWorld {
         // Vẽ bàn, bi, gậy lên màn hình
         PoolGame.getInstance().myCanvas.ClearFrame();
         this.board.draw();
-        for (let i = 0; i < this.AllBalls.length; i++) {
-            this.AllBalls[i].draw();
+        for (let ball of this.AllBalls) {
+            if (ball.isInHole) continue;
+            ball.draw();
         }
-        this.stick.draw();
+
+        if (!this.gamePolicy.lockInput && !this.gamePolicy.isFoul) {
+            this.stick.draw();
+        }
     }
 
     handleKeyInput(event) {
         if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
-        if(this.gamePolicy.turn==2 && this.isBotOn)return;
+        if (this.gamePolicy.turn == 2 && this.isBotOn) return;
         var keyCode = event.code;
-        switch (keyCode) {
-            case "ArrowLeft":
-                this.stick.downAngle()
-                break;
-            case "ArrowRight":
-                this.stick.upAngle()
-                break;
-            case "ArrowUp":
-                this.stick.upPower()
-                break;
-            case "ArrowDown":
-                this.stick.downPower()
-                break;
-            case "Space": case "Enter":
-                if (this.stick.power == 0) return;
-                this.stick.shoot();
-                this.gamePolicy.lockInput = true;
-                break;
-            default:
-                break;
+        if (!this.gamePolicy.isFoul) {
+            switch (keyCode) {
+                case "ArrowLeft":
+                    this.stick.downAngle()
+                    break;
+                case "ArrowRight":
+                    this.stick.upAngle()
+                    break;
+                case "ArrowUp":
+                    this.stick.upPower()
+                    break;
+                case "ArrowDown":
+                    this.stick.downPower()
+                    break;
+                case "Space": case "Enter":
+                    if (this.stick.power == 0) return;
+                    this.stick.shoot();
+                    this.gamePolicy.lockInput = true;
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (keyCode) {
+                case "ArrowLeft":
+                    this.whiteBall.position.x -= 10;
+                    break;
+                case "ArrowRight":
+                    this.whiteBall.position.x += 10;
+                    break;
+                case "ArrowUp":
+                    this.whiteBall.position.y -= 10;
+                    break;
+                case "ArrowDown":
+                    this.whiteBall.position.y += 10;
+                    break;
+                case "Space": case "Enter":
+                    this.gamePolicy.isFoul = false;
+                    this.stick.resetPower();
+                    break;
+                default:
+                    break;
+            }
         }
     }
     handleMouseInput(event) {
@@ -90,6 +117,7 @@ class GameWorld {
         // console.log(type)
     }
     botProcess() {
+        if (this.gamePolicy.isFoul) this.gamePolicy.isFoul = false;
         let bestShot = this.bot.takeShot();
         this.stick.angle = bestShot.angle
         this.stick.power = Math.min(bestShot.power, 200);
