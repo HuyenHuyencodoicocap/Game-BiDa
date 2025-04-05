@@ -38,7 +38,9 @@ class GameWorld {
         let curTime = Date.now();
         let deltaTime = curTime - this.lastTime;
         deltaTime = Math.min(deltaTime, 1000 / 24.0);
+        deltaTime = Math.max(deltaTime, 1);
         this.lastTime = curTime;
+        this.stick.setDeltaTime(deltaTime);
         for (let i = 0; i < this.AllBalls.length; i++) {
             if (this.AllBalls[i].isInHole) continue;
             this.AllBalls[i].update(deltaTime);
@@ -143,9 +145,9 @@ class GameWorld {
                     this.stick.setPower(temp.magnitude() - 20);
                     break;
                 case "mouseup":
+                    this.mousedownPos = null;
                     if (this.stick.power == 0) break;
                     this.stick.shoot();
-                    this.mousedownPos = null;
                     // this.gamePolicy.lockInput = true;
                     break;
                 default:
