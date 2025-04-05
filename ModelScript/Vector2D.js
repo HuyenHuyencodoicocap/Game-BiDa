@@ -95,13 +95,18 @@ class Vector2D {
     distanceFrom(obj) {
         return Math.sqrt((this.x - obj.x) ** 2 + (this.y - obj.y) ** 2);
     }
-    magnitude(){
+    magnitude() {
         return Math.sqrt(this.x ** 2 + this.y ** 2);
     }
     dot(other) {
         return this.x * other.x + this.y * other.y;
     }
+    // Góc giữa hai vector (đơn vị: radian)
+    angle(that = new Vector2D(1,0)) {
+        return Math.atan2(that.y, that.x) - Math.atan2(this.y, this.x);
+    }
     toString() {
         return `(${this.x}, ${this.y})`;
     }
+
 }

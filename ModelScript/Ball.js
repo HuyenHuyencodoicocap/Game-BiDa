@@ -10,6 +10,7 @@ class Ball {
         this.color = color; // Chỉ nhận 3 màu hợp lệ kiểu enum
         this.isInHole = false; // Bóng có vào lỗ không kiểu bool
         this.vantoc = new Vector2D(0, 0); // Vận tốc ban đầu
+        this.firstCollide=null;
 
         if (color == BallColor.YELLOW) {
             this.img = PoolGame.getInstance().assets.images["ball_Yellow"];
@@ -19,7 +20,8 @@ class Ball {
             this.img = PoolGame.getInstance().assets.images["ball_White"];
             this.color = BallColor.WHITE; // Chỉ nhận 3 màu hợp lệ kiểu enum
         }
-        Ball.origin = Object.freeze(new Vector2D(this.img.width / 2, this.img.height / 2));
+        this.origin = Object.freeze(new Vector2D(this.img.width / 2, this.img.height / 2));
+        this.radius= 20;
     }
 
     update(deltaTime) {
@@ -32,7 +34,7 @@ class Ball {
 
     draw() {
         // Code hàm vẽ bóng tại đây
-        if (this.isInHole == false) PoolGame.getInstance().myCanvas.DrawImage(this.img, this.position, 0, Ball.origin);
+        if (this.isInHole == false) PoolGame.getInstance().myCanvas.DrawImage(this.img, this.position, 0, this.origin);
     }
 
     updateMoving(deltaTime) { // update vị trí của bóng
@@ -51,6 +53,12 @@ class Ball {
         let ballRadius = this.img.width / 2;
 
         if (distance <= ballRadius * 2) {
+            if(this.firstCollide==null){
+                this.firstCollide=that;
+            }
+            if(that.firstCollide==null){
+                that.firstCollide=this;
+            }
             let normal = this.position.subtract(that.position).normalize();
             let relativeVelocity = this.vantoc.subtract(that.vantoc);
             let speed = relativeVelocity.dot(normal);
@@ -65,7 +73,9 @@ class Ball {
             let friction = 0.99; // Giảm tốc nhẹ dần
             this.vantoc = newVantoc1.multiply(friction);
             that.vantoc = newVantoc2.multiply(friction);
+            return true;
         }
+        return false
     }
 
 
@@ -79,13 +89,16 @@ class Ball {
         if (this.position.x - radius <= board.leftWall || this.position.x + radius >= board.width - board.rightWall) {
             this.vantoc.x *= -1; // Đảo ngược hướng X
             this.position.x = Math.max(board.leftWall + radius, Math.min(this.position.x, board.width - board.rightWall - radius));
+            return true;
         }
 
         // Kiểm tra va chạm với viền trên & dưới
         if (this.position.y - radius <= board.topWall || this.position.y + radius >= board.height - board.bottomWall) {
             this.vantoc.y *= -1; // Đảo ngược hướng Y
             this.position.y = Math.max(board.topWall + radius, Math.min(this.position.y, board.height - board.bottomWall - radius));
+            return true;
         }
+        return false;
     }
 
     CollideHole() {
@@ -104,11 +117,12 @@ class Ball {
                     // Xử lý logic khi bóng trắng vào lỗ, ví dụ:
                     //PoolGame.getInstance().gameWorld.onWhiteInHole();
                 }
+                return true;
 
-
-                break;
+                // break;
             }
         }
+        return false;
     }
 
     generateId() {
@@ -131,6 +145,9 @@ class Ball {
     angleToHole(hole) {
         let direction = hole.subtract(this.position);
         return Math.atan2(-direction.y, direction.x); // Đảo y để giữ hệ toán học
+    }
+    resetFirstCollide(){
+        this.firstCollide=null;
     }
 }
 

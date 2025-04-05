@@ -65,4 +65,25 @@ class MyCanvas {
     ClearFrame() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
+    DrawLine(startPos,endPos){
+        // Start a new Path
+        this.context.beginPath();
+        startPos = startPos.multiply(this.getScale()).add(this.getOffset());
+        endPos = endPos.multiply(this.getScale()).add(this.getOffset());
+        this.context.moveTo(startPos.x,startPos.y);
+        this.context.lineTo(endPos.x, endPos.y);
+        this.context.strokeStyle = "white";
+
+        // Draw the Path
+        this.context.stroke();
+    }
+    DrawCircle(pos,radius){
+        pos = pos.multiply(this.getScale()).add(this.getOffset());
+        radius=radius*this.getScale();
+        this.context.beginPath();
+        this.context.arc(pos.x, pos.y, radius, 0, 2 * Math.PI);
+        this.strokeStyle = "white";
+        // Draw the Circle
+        this.context.stroke();
+    }
 }

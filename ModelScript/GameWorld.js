@@ -1,6 +1,7 @@
 class GameWorld {
+    initWhiteBallPos = Object.freeze(new Vector2D(410, 825 / 2));
     constructor() {
-        this.whiteBall = new Ball(new Vector2D(410, 825 / 2), BallColor.WHITE); // Đặt bóng trắng ở vị trí ban đầu
+        this.whiteBall = new Ball(this.initWhiteBallPos, BallColor.WHITE); // Đặt bóng trắng ở vị trí ban đầu
 
         this.redBall = [];
         this.yellowBall = [];
@@ -8,173 +9,202 @@ class GameWorld {
         this.createTriangleBalls(new Vector2D(1000, 825 / 2), 10, 25); // Vị trí gốc, số lượng bóng, khoảng cách giữa bóng
         this.AllBalls = [...this.redBall, ...this.yellowBall, this.whiteBall];
 
-        this.stick = new Stick();
+        this.stick = new Stick(this.whiteBall);
         this.board = new Board();
         this.bot = new Bot();
+        this.gamePolicy = new GamePolicy(this);
 
         this.width = this.board.width;
         this.height = this.board.height;
         this.size = new Vector2D(this.width, this.height);
 
-        this.turn = 2; // Lượt đánh hiện tại
         this.isBotOn = true; // Chế độ bot
         // this.score = 0;
 
         this.currentNumberBallRed = this.redBall.length; // Số bi đỏ còn lại
         this.currentNumberBallYellow = this.yellowBall.length; // Số bi vàng còn lại
-        this.lockInput = false; // Nếu bóng đang lăn thì không nhận input
 
         this.initEventListeners();
 
         this.lastTime = Date.now();
 
-        this.player1 = document.getElementById("player1")// người chơi 1
-        this.player2 = document.getElementById("player2")
-        this.player1_score = 0;
-        this.player2_score = 0;
-        this.player1_score_elem = document.getElementById("player1_score");// Hiển thị điểm
-        this.player2_score_elem = document.getElementById("player2_score");
-
-        this.namePlayerWinner1 = document.getElementById("namePlayerWinner");// Hiển thị người chơi chiến thắng
-        this.namePlayerWinner2 = document.getElementById("namePlayerWinner");
-        this.displayWinner = document.getElementById("displayWinner");
     }
 
     update() {
+        if (this.gamePolicy.isFoul) {
+            return;
+        }
         // Cập nhật trạng thái game, vị trí bóng, kiểm tra va chạm, v.v.
         let curTime = Date.now();
         let deltaTime = curTime - this.lastTime;
+        deltaTime = Math.min(deltaTime, 1000 / 24.0);
+        deltaTime = Math.max(deltaTime, 1);
         this.lastTime = curTime;
+        this.stick.setDeltaTime(deltaTime);
         for (let i = 0; i < this.AllBalls.length; i++) {
             if (this.AllBalls[i].isInHole) continue;
             this.AllBalls[i].update(deltaTime);
             for (let j = i + 1; j < this.AllBalls.length; j++) {
+                if (this.AllBalls[j].isInHole) continue;
                 this.AllBalls[i].CollideBall(this.AllBalls[j]);
             }
             this.AllBalls[i].CollideWall();
             this.AllBalls[i].CollideHole();
         }
-        if (this.lockInput) {
-            let isNextTurn = true;
-            for (let ball of this.AllBalls) {
-                if (ball.isMoving()) isNextTurn = false;
-            }
-            if (isNextTurn) {
-                this.lockInput = false
-                this.changeTurn();
-            }
-
-            this.player1_score = 0;
-            this.player2_score = 0;
-            for (let i = 0; i < this.yellowBall.length; i++) {
-                if (this.yellowBall[i].isInHole) {
-                    this.player1_score += 1;
-                }
-            }
-            for (let i = 0; i < this.redBall.length; i++) {
-                if (this.redBall[i].isInHole) {
-                    this.player2_score += 1;
-                }
-            }
-            this.player1_score_elem.innerHTML = this.player1_score
-            this.player2_score_elem.innerHTML = this.player2_score
-
-        }
-
-        this.isWin();
+        this.gamePolicy.update();
     }
     draw() {
         // Vẽ bàn, bi, gậy lên màn hình
         PoolGame.getInstance().myCanvas.ClearFrame();
         this.board.draw();
-        for (let i = 0; i < this.AllBalls.length; i++) {
-            this.AllBalls[i].draw();
+        for (let ball of this.AllBalls) {
+            if (ball.isInHole) continue;
+            ball.draw();
         }
-        this.stick.draw();
 
-
+        if (!this.gamePolicy.lockInput && !this.gamePolicy.isFoul) {
+            this.stick.draw();
+        }
     }
 
-    handleInput(event) {
+    handleKeyInput(event) {
         if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
-
+        if (this.gamePolicy.turn == 2 && this.isBotOn) return; //lượt bot
         var keyCode = event.code;
-
-        console.log(keyCode);
-        switch (keyCode) {
-            case "ArrowLeft":
-                if (this.isBotOn) {
-                    let bestShot = this.bot.takeShot();
-                    console.log(bestShot);
-
-                    //this.stick.shootAI(bestShot.angle, bestShot.power);
-                    this.stick.angle = bestShot.angle
-                    this.stick.power = bestShot.power % 1000
-                }
-                else { this.stick.downAngle() }
-                break;
-            case "ArrowRight":
-                this.stick.upAngle()
-                break;
-            case "ArrowUp":
-                this.stick.upPower()
-                break;
-            case "ArrowDown":
-                this.stick.downPower()
-                break;
-            case "Space": case "Enter":
-                // if (this.isBotOn) {
-                //     let bestShot = this.bot.takeShot();
-                //     this.stick.shoot(bestShot.angle, bestShot.power);
-                // } else {
-                //     this.stick.shoot();
-                // }
-                this.stick.shoot();
-                this.lockInput = true;
-                this.stick.power = 0;
-                break;
-
-            default:
-                break;
-        }
-
-    }
-    changeTurn() {
-        if (this.turn == 1) {
-            this.turn = 2
-
+        if (!this.gamePolicy.isFoul) {
+            switch (keyCode) {
+                case "ArrowLeft":
+                    this.stick.downAngle()
+                    break;
+                case "ArrowRight":
+                    this.stick.upAngle()
+                    break;
+                case "ArrowUp":
+                    this.stick.upPower()
+                    break;
+                case "ArrowDown":
+                    this.stick.downPower()
+                    break;
+                case "Space": case "Enter":
+                    if (this.stick.power == 0) break;
+                    this.stick.shoot();
+                    this.gamePolicy.lockInput = true;
+                    break;
+                default:
+                    break;
+            }
         } else {
-            this.turn = 1
+            switch (keyCode) {
+                case "ArrowLeft":
+                    this.whiteBall.position.x -= 10;
+                    break;
+                case "ArrowRight":
+                    this.whiteBall.position.x += 10;
+                    break;
+                case "ArrowUp":
+                    this.whiteBall.position.y -= 10;
+                    break;
+                case "ArrowDown":
+                    this.whiteBall.position.y += 10;
+                    break;
+                case "Space": case "Enter":
+                    let validate = true;
+                    for (let ball of this.AllBalls) {
+                        if (ball.isInHole) continue;
+                        if (ball == this.whiteBall) continue;
+                        if (this.whiteBall.CollideBall(ball)) {
+                            console.log(ball)
+                            validate = false;
+                        }
+                    }
+                    if (this.whiteBall.CollideWall() || this.whiteBall.CollideHole()) validate = false;
+                    if (!validate) break;
+                    this.gamePolicy.isFoul = false;
+                    this.stick.resetPower();
+                    break;
+                default:
+                    break;
+            }
         }
-        this.player1.classList.toggle("player-playing");
-        this.player2.classList.toggle("player-playing");
     }
-
+    handleMouseInput(event) {
+        if (this.gamePolicy.lockInput) return; // Nếu bóng đang lăn thì không nhận input
+        if (this.gamePolicy.turn == 2 && this.isBotOn) return; //lượt bot
+        let type = event.type;
+        // console.log(event)
+        // console.log(type)
+        if (!this.gamePolicy.isFoul) {
+            switch (type) {
+                case "mousedown":
+                    this.mousedownPos = new Vector2D(event.x, event.y);
+                    break;
+                case "mousemove":
+                    if (!this.mousedownPos) break;
+                    let temp = this.mousedownPos.subtract(new Vector2D(event.x, event.y));
+                    this.stick.setAngle(-temp.angle() / Math.PI * 180);
+                    this.stick.setPower(temp.magnitude() - 20);
+                    break;
+                case "mouseup":
+                    this.mousedownPos = null;
+                    if (this.stick.power == 0) break;
+                    this.stick.shoot();
+                    // this.gamePolicy.lockInput = true;
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (type) {
+                case "mousemove":
+                    if (event.target != PoolGame.getInstance().myCanvas.canvas) break;
+                    let rect = event.target.getBoundingClientRect();
+                    let x = event.clientX - rect.left; //x position within the element.
+                    let y = event.clientY - rect.top;  //y position within the element.
+                    this.whiteBall.position = new Vector2D(x, y)
+                        .subtract(PoolGame.getInstance().myCanvas.getOffset())
+                        .divide(PoolGame.getInstance().myCanvas.getScale())
+                    break;
+                case "mouseup":
+                    let validate = true;
+                    for (let ball of this.AllBalls) {
+                        if (ball.isInHole) continue;
+                        if (ball == this.whiteBall) continue;
+                        if (this.whiteBall.CollideBall(ball)) {
+                            console.log(ball)
+                            validate = false;
+                        }
+                    }
+                    if (this.whiteBall.CollideWall() || this.whiteBall.CollideHole()) validate = false;
+                    if (!validate) break;
+                    this.gamePolicy.isFoul = false;
+                    this.stick.resetPower();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    botProcess() {
+        if (this.gamePolicy.isFoul) this.gamePolicy.isFoul = false;
+        let bestShot = this.bot.takeShot();
+        this.stick.angle = bestShot.angle
+        this.stick.power = Math.min(bestShot.power, 200);
+        setTimeout(() => {
+            this.stick.shoot();
+            this.gamePolicy.lockInput = true;
+        }, 1000);
+    }
     reset() {
         // Reset lại game về trạng thái ban đầu
         console.log("Game reset!");
     }
 
-    isWin() {
-        if (this.player1_score == 5) {
-            this.namePlayerWinner1.innerHTML = "Player1"
-            this.displayWinner.style.display = "block";
-            return true;
-        }
-        else if (this.player2_score == 5) {
-            this.namePlayerWinner2.innerHTML = "Player2"
-            this.displayWinner.style.display = "block";
-            return true;
-        } else {
-            return false;
-        }
-
-
-    }
 
     initEventListeners() {
-        document.addEventListener("keydown", (event) => this.handleInput(event));
-        // document.addEventListener("mousedown", (event) => this.handleInput(event));
+        document.addEventListener("keydown", (event) => this.handleKeyInput(event));
+        document.addEventListener("mousedown", (event) => this.handleMouseInput(event));
+        document.addEventListener("mouseup", (event) => this.handleMouseInput(event));
+        document.addEventListener("mousemove", (event) => this.handleMouseInput(event));
     }
     gameLoop() {
         this.update();
