@@ -61,12 +61,7 @@ class GamePolicy {
             this.gameWorld.whiteBall.vantoc = new Vector2D(0, 0);
             this.isFoul=true;
         }
-        if(
-            !this.goHole
-            || this.gameWorld.whiteBall.firstCollide==null
-            || (!this.matchColor(this.gameWorld.whiteBall.firstCollide.color) && !this.firstTurn)
-            || this.gameWorld.whiteBall.isInHole
-        ){
+        if(!this.goHole || this.isFoul){
             this.turn = 3 - this.turn;
             this.player1.classList.toggle("player-yellow-playing");
             this.player2.classList.toggle("player-red-playing");
