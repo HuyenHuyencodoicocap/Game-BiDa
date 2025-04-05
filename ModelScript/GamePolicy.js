@@ -49,20 +49,6 @@ class GamePolicy {
     }
     changeTurn() {
         //đổi lượt
-        if(
-            this.gameWorld.whiteBall.firstCollide==null
-            || !this.goHole 
-            || (!this.matchColor(this.gameWorld.whiteBall.firstCollide.color) && !this.firstTurn)
-            || this.gameWorld.whiteBall.isInHole
-        ){
-            this.turn = 3 - this.turn;
-            this.player1.classList.toggle("player-yellow-playing");
-            this.player2.classList.toggle("player-red-playing");
-        }
-        //thiết lập lai các tham số
-        if(this.gameWorld.whiteBall.firstBallCollide!=null){
-            this.firstTurn=false;
-        }
         if (
             this.gameWorld.whiteBall.isInHole
             || this.gameWorld.whiteBall.firstCollide==null
@@ -72,6 +58,20 @@ class GamePolicy {
             this.gameWorld.whiteBall.position = this.gameWorld.initWhiteBallPos;
             this.gameWorld.whiteBall.isInHole = false;
             this.gameWorld.whiteBall.vantoc = new Vector2D(0, 0);
+        }
+        if(
+            !this.goHole
+            || this.gameWorld.whiteBall.firstCollide==null
+            || (!this.matchColor(this.gameWorld.whiteBall.firstCollide.color) && !this.firstTurn)
+            || this.gameWorld.whiteBall.isInHole
+        ){
+            this.turn = 3 - this.turn;
+            this.player1.classList.toggle("player-yellow-playing");
+            this.player2.classList.toggle("player-red-playing");
+        }
+        //thiết lập lai các tham số
+        if(this.gameWorld.whiteBall.firstCollide!=null){
+            this.firstTurn=false;
         }
         this.goHole=false;
         this.gameWorld.stick.resetPower();

@@ -78,7 +78,6 @@ class Stick {
                 };
             }
             if(tempBall.CollideWall()){
-                console.log(index)
                 return{
                     endpos: tempBall.position,
                     thisVanToc: tempBall.vantoc,
