@@ -1,27 +1,29 @@
 class Stick {
-    constructor() {
+    constructor(whiteBall) {
         this.img = PoolGame.getInstance().assets.images['stick'];
         this.angle = 0; // Hướng gậy
         this.power = 0; // Lực gậy
-    }
-
-    getPositionDraw() {
-        // Code lấy vị trí vẽ gậy dựa trên vị trí bi trắng
+        this.whiteBall=whiteBall;
     }
 
     draw() {
         // Code vẽ gậy lên màn hình
         if (PoolGame.getInstance().gameWorld.gamePolicy.lockInput) return;
-        this.origin = new Vector2D(this.img.width + Ball.origin.x + this.power, this.img.height / 2);
+        this.origin = new Vector2D(this.img.width + this.whiteBall.origin.x + this.power, this.img.height / 2);
         PoolGame.getInstance().myCanvas.DrawImage(
             this.img,
-            PoolGame.getInstance().gameWorld.whiteBall.position,
+            this.whiteBall.position,
             this.angle,
             this.origin
         );
+        if(this.aimLine==null || this.aimLine.angle!=this.angle)
+            this.aimLine=this.calculateAimLine(this.angle);
+        PoolGame.getInstance().myCanvas.DrawLine(this.whiteBall.position,this.aimLine.endpos);
+        PoolGame.getInstance().myCanvas.DrawCircle(this.aimLine.endpos,this.whiteBall.radius);
     }
     resetPower() {
         this.power = 0;
+        this.aimLine=this.calculateAimLine(this.angle);
     }
     upPower() {
         this.power += 4;
@@ -44,12 +46,54 @@ class Stick {
     shoot(angle, power) {
         let dx = power / 50.0 * Math.cos(angle * Math.PI / 180);
         let dy = power / 50.0 * Math.sin(angle * Math.PI / 180);
-        PoolGame.getInstance().gameWorld.whiteBall.vantoc = new Vector2D(dx, dy);
+        this.whiteBall.vantoc = new Vector2D(dx, dy);
     }
     shoot() {
         // Hàm bắn bóng
         let dx = this.power / 50.0 * Math.cos(this.angle * Math.PI / 180);
         let dy = this.power / 50.0 * Math.sin(this.angle * Math.PI / 180);
-        PoolGame.getInstance().gameWorld.whiteBall.vantoc = new Vector2D(dx, dy);
+        this.whiteBall.vantoc = new Vector2D(dx, dy);
     }
+
+    calculateAimLine(angle) {
+        let tempPower = 1;
+        let tempBall= new Ball(this.whiteBall.position);
+        let tempVantoc=new Vector2D(Math.cos(angle * Math.PI / 180),Math.sin(angle * Math.PI / 180)).multiply(tempPower);
+        let index=0;
+        while(index<1000){
+            tempBall.vantoc=tempVantoc
+            tempBall.update(10);
+            for(let ball of PoolGame.getInstance().gameWorld.AllBalls){
+                if(ball.isInHole || ball.color==BallColor.WHITE) continue;
+                if(tempBall.CollideBall(ball)){
+                    let thisVanToc=tempBall.vantoc;
+                    let thatVanToc=ball.vantoc;
+                    ball.vantoc=new Vector2D(0,0);
+                    return{
+                        endpos: tempBall.position,
+                        thisVanToc,
+                        thatVanToc,
+                        angle
+                    }
+                };
+            }
+            if(tempBall.CollideWall()){
+                console.log(index)
+                return{
+                    endpos: tempBall.position,
+                    thisVanToc: tempBall.vantoc,
+                    thatVanToc: {x:0,y:0},
+                    angle,
+                }
+            }
+            index++;
+        }
+        return{
+            endpos: this.whiteBall.position,
+            thisVanToc: {x:0,y:0},
+            thatVanToc: {x:0,y:0},
+            angle
+        }
+    }
+    
 }

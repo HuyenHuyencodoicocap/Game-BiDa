@@ -104,4 +104,5 @@ class Vector2D {
     toString() {
         return `(${this.x}, ${this.y})`;
     }
+    
 }

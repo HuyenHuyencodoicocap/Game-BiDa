@@ -53,6 +53,7 @@ class GamePolicy {
             this.gameWorld.whiteBall.firstCollide==null
             || !this.goHole 
             || (!this.matchColor(this.gameWorld.whiteBall.firstCollide.color) && !this.firstTurn)
+            || this.gameWorld.whiteBall.isInHole
         ){
             this.turn = 3 - this.turn;
             this.player1.classList.toggle("player-yellow-playing");
@@ -62,12 +63,18 @@ class GamePolicy {
         if(this.gameWorld.whiteBall.firstBallCollide!=null){
             this.firstTurn=false;
         }
-        if (this.gameWorld.whiteBall.isInHole) {
+        if (
+            this.gameWorld.whiteBall.isInHole
+            || this.gameWorld.whiteBall.firstCollide==null
+            || (!this.matchColor(this.gameWorld.whiteBall.firstCollide.color) && !this.firstTurn)
+            || this.gameWorld.whiteBall.isInHole
+        ) {
             this.gameWorld.whiteBall.position = this.gameWorld.initWhiteBallPos;
             this.gameWorld.whiteBall.isInHole = false;
             this.gameWorld.whiteBall.vantoc = new Vector2D(0, 0);
         }
         this.goHole=false;
+        this.gameWorld.stick.resetPower();
         this.gameWorld.whiteBall.resetFirstCollide();
         if(this.turn == 2 && this.gameWorld.isBotOn){
             this.lockInput=false;

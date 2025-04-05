@@ -9,7 +9,7 @@ class GameWorld {
         this.createTriangleBalls(new Vector2D(1000, 825 / 2), 10, 25); // Vị trí gốc, số lượng bóng, khoảng cách giữa bóng
         this.AllBalls = [...this.redBall, ...this.yellowBall, this.whiteBall];
 
-        this.stick = new Stick();
+        this.stick = new Stick(this.whiteBall);
         this.board = new Board();
         this.bot = new Bot();
         this.gamePolicy = new GamePolicy(this);
@@ -58,7 +58,7 @@ class GameWorld {
         this.stick.draw();
     }
 
-    handleInput(event) {
+    handleKeyInput(event) {
         if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
         if(this.gamePolicy.turn==2 && this.isBotOn)return;
         var keyCode = event.code;
@@ -79,11 +79,15 @@ class GameWorld {
                 if (this.stick.power == 0) return;
                 this.stick.shoot();
                 this.gamePolicy.lockInput = true;
-                this.stick.power = 0;
                 break;
             default:
                 break;
         }
+    }
+    handleMouseInput(event) {
+        // let type = event.type;
+        // console.log(event)
+        // console.log(type)
     }
     botProcess() {
         let bestShot = this.bot.takeShot();
@@ -92,7 +96,6 @@ class GameWorld {
         setTimeout(() => {
             this.stick.shoot();
             this.gamePolicy.lockInput = true;
-            this.stick.power = 0;
         }, 1000);
     }
     reset() {
@@ -102,8 +105,10 @@ class GameWorld {
 
 
     initEventListeners() {
-        document.addEventListener("keydown", (event) => this.handleInput(event));
-        // document.addEventListener("mousedown", (event) => this.handleInput(event));
+        document.addEventListener("keydown", (event) => this.handleKeyInput(event));
+        document.addEventListener("mousedown", (event) => this.handleMouseInput(event));
+        document.addEventListener("mouseup", (event) => this.handleMouseInput(event));
+        document.addEventListener("mousemove", (event) => this.handleMouseInput(event));
     }
     gameLoop() {
         this.update();
