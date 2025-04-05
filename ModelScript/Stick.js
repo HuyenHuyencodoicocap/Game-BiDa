@@ -19,6 +19,8 @@ class Stick {
             this.aimLine=this.calculateAimLine(this.angle);
         PoolGame.getInstance().myCanvas.DrawLine(this.whiteBall.position,this.aimLine.endpos);
         PoolGame.getInstance().myCanvas.DrawCircle(this.aimLine.endpos,this.whiteBall.radius);
+        PoolGame.getInstance().myCanvas.DrawLine(this.aimLine.endpos,this.aimLine.endpos.add(this.aimLine.thisVanToc.multiply(100)));
+        PoolGame.getInstance().myCanvas.DrawLine(this.aimLine.thatpos,this.aimLine.thatpos.add(this.aimLine.thatVanToc.multiply(100)));
     }
     resetPower() {
         this.power = 0;
@@ -59,9 +61,9 @@ class Stick {
         let tempBall= new Ball(this.whiteBall.position);
         let tempVantoc=new Vector2D(Math.cos(angle * Math.PI / 180),Math.sin(angle * Math.PI / 180)).multiply(tempPower);
         let index=0;
-        while(index<1000){
+        while(index<10000){
             tempBall.vantoc=tempVantoc
-            tempBall.update(10);
+            tempBall.update(1);
             for(let ball of PoolGame.getInstance().gameWorld.AllBalls){
                 if(ball.isInHole || ball.color==BallColor.WHITE) continue;
                 if(tempBall.CollideBall(ball)){
@@ -71,6 +73,7 @@ class Stick {
                     return{
                         endpos: tempBall.position,
                         thisVanToc,
+                        thatpos: ball.position,
                         thatVanToc,
                         angle
                     }
@@ -80,7 +83,8 @@ class Stick {
                 return{
                     endpos: tempBall.position,
                     thisVanToc: tempBall.vantoc,
-                    thatVanToc: {x:0,y:0},
+                    thatpos: tempBall.position,
+                    thatVanToc: new Vector2D(0,0),
                     angle,
                 }
             }
@@ -88,8 +92,9 @@ class Stick {
         }
         return{
             endpos: this.whiteBall.position,
-            thisVanToc: {x:0,y:0},
-            thatVanToc: {x:0,y:0},
+            thisVanToc: new Vector2D(0,0),
+            thatpos: this.whiteBall.position,
+            thatVanToc: new Vector2D(0,0),
             angle
         }
     }
