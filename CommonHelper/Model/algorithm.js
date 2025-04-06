@@ -1,10 +1,10 @@
-
 class GeneticAlgorithm {
     constructor(populationSize, mutationRate, simulation) {
         this.populationSize = populationSize;
         this.mutationRate = mutationRate;
         this.simulation = simulation;
         this.population = [];
+        this.cache = {}; // Cache các kết quả simulateShot để tránh tính lại
     }
 
     initializePopulation() {
@@ -15,64 +15,53 @@ class GeneticAlgorithm {
     }
 
     evaluateFitness(shot) {
-        let result = simulateShot(shot.angle, shot.power, this.simulation.whiteBall, this.simulation.balls, this.simulation.holes);
+        // Sử dụng cache để tránh tính toán lại
+        const key = `${shot.angle}-${shot.power}`;
+        if (this.cache[key]) return this.cache[key];
 
-        let controlBonus = result.success ? 500 : 0;
+        let result = simulateShot(shot.angle, shot.power, this.simulation.whiteBall, this.simulation.balls, this.simulation.holes);
         let fitness = 0;
 
         if (result.success) {
-            // Đánh giá cú đánh thành công
-            fitness = 1200 + result.countBallToHole.countYellowBallHole * 150 + controlBonus;
+            fitness = 3000 + result.countBallToHole.countYellowBallHole * 500;
         } else {
-            let scoreWhiteBall = result.countBallToHole.whiteBallInHole ? 200 : 0;
-            // Đánh giá cú đánh thất bại
-            fitness = -result.distanceToHole * 3 - scoreWhiteBall - result.countBallToHole.countRedBallHole * 100 + result.countBallToHole.countYellowBallHole * 150;
+            let penalty = result.countBallToHole.whiteBallInHole ? 500 : 0;
+            fitness = -result.distanceToHole * 2 - penalty - result.countBallToHole.countRedBallHole * 100;
         }
 
-        // Trả về kết quả với điểm số và khoảng cách tới lỗ để đánh giá cú đánh
-        return { fitness, distanceToHole: result.distanceToHole };
+        // Cache kết quả
+        this.cache[key] = { fitness, distanceToHole: result.distanceToHole };
+        return this.cache[key];
     }
+
     selectParent() {
-        let tournamentSize = 5;
-        let tournament = [];
-        let bestFitness = -Infinity;
-        let bestIndividual = null;
+        let totalFitness = this.population.reduce((sum, individual) => sum + Math.max(0, this.evaluateFitness(individual).fitness), 0);
+        let randomValue = Math.random() * totalFitness;
 
-        // Chọn và đánh giá từng cá thể một, giữ lại cá thể tốt nhất
-        for (let i = 0; i < tournamentSize; i++) {
-            let randomIndex = Math.floor(Math.random() * this.population.length);
-            let individual = this.population[randomIndex];
-            let fitness = this.evaluateFitness(individual).fitness;
-
-            if (fitness > bestFitness) {
-                bestFitness = fitness;
-                bestIndividual = individual;
-            }
+        for (let individual of this.population) {
+            randomValue -= Math.max(0, this.evaluateFitness(individual).fitness);
+            if (randomValue <= 0) return individual;
         }
-
-        return bestIndividual;  // Trả về cá thể tốt nhất tìm thấy
+        return this.population[0];
     }
-
 
     crossover(parent1, parent2) {
+        // Sử dụng uniform crossover để tạo ra sự đa dạng
         return {
-            angle: (parent1.angle + parent2.angle) / 2,
-            power: (parent1.power + parent2.power) / 2
+            angle: Math.random() > 0.5 ? parent1.angle : parent2.angle,
+            power: Math.random() > 0.5 ? parent1.power : parent2.power
         };
     }
 
     mutate(shot) {
         if (Math.random() < this.mutationRate) {
-            // Sử dụng phần trăm tương đối cho cả góc và lực
-            const angleRange = 10; // ±5% của 360 độ
-            const powerRange = 20; // ±10% của khoảng lực (0-200)
+            const angleRange = 10;
+            const powerRange = 20;
 
             shot.angle += (Math.random() - 0.5) * angleRange;
-            // Giữ góc trong khoảng 0-360
             shot.angle = (shot.angle + 360) % 360;
 
             shot.power += (Math.random() - 0.5) * powerRange;
-            // Giữ lực trong khoảng hợp lệ
             shot.power = Math.max(0, Math.min(200, shot.power));
         }
         return shot;
@@ -82,25 +71,17 @@ class GeneticAlgorithm {
         this.initializePopulation();
 
         for (let gen = 0; gen < generations; gen++) {
-            // Đánh giá và sắp xếp quần thể theo độ phù hợp (từ cao đến thấp)
             this.population.sort((a, b) =>
                 this.evaluateFitness(b).fitness - this.evaluateFitness(a).fitness
             );
 
             let newPopulation = [];
-            let topN = 5; // Giữ 5 giải pháp tốt nhất
-
-            // Thêm elite vào quần thể mới (đã được sắp xếp ở trên)
+            let topN = Math.floor(this.populationSize * 0.2);
             newPopulation.push(...this.population.slice(0, topN));
 
-            // Tạo quần thể mới từ các cha mẹ
-            for (let i = topN; i < this.populationSize; i++) {
+            while (newPopulation.length < this.populationSize) {
                 let parent1 = this.selectParent();
-                let parent2;
-                do {
-                    parent2 = this.selectParent();
-                } while (parent1 === parent2);
-
+                let parent2 = this.selectParent();
                 let offspring = this.crossover(parent1, parent2);
                 newPopulation.push(this.mutate(offspring));
             }
@@ -108,7 +89,6 @@ class GeneticAlgorithm {
             this.population = newPopulation;
         }
 
-        // Đánh giá lại và trả về cá thể tốt nhất
         this.population.sort((a, b) =>
             this.evaluateFitness(b).fitness - this.evaluateFitness(a).fitness
         );
@@ -123,13 +103,12 @@ class MonteCarloTreeSearch {
     }
 
     findBestShot(initialPopulation) {
-        let bestShot = { angle: 0, power: 0, successRate: 0, distanceToHole: Infinity };  // Thêm `distanceToHole` vào kết quả ban đầu
+        let bestShot = { angle: 0, power: 0, successRate: 0, distanceToHole: Infinity };
 
         for (let i = 0; i < this.iterations; i++) {
             let shot = initialPopulation[i % initialPopulation.length];
             let { successRate, averageDistance } = this.simulateShot(shot.angle, shot.power);
 
-            // So sánh và chọn cú đánh tốt nhất
             if (successRate > bestShot.successRate || (successRate === bestShot.successRate && averageDistance < bestShot.distanceToHole)) {
                 bestShot = { ...shot, successRate, distanceToHole: averageDistance };
             }
@@ -138,12 +117,13 @@ class MonteCarloTreeSearch {
         return bestShot;
     }
 
-    simulateShot(angle, power, simulations = 3) { // Tăng lên 10 lần mô phỏng, có thể điều chỉnh
+    simulateShot(angle, power, simulations = 10) { // Tăng số lần mô phỏng
         let success = 0;
         let totalDistance = 0;
+
         for (let i = 0; i < simulations; i++) {
             let result = simulateShot(angle, power, this.simulation.whiteBall, this.simulation.balls, this.simulation.holes);
-            if (result.success) success++;
+            if (result.success && result.countBallToHole.countYellowBallHole > 0) success++; // Ưu tiên bi vàng
             totalDistance += result.distanceToHole;
         }
 
@@ -157,76 +137,22 @@ class MonteCarloTreeSearch {
 class AITrainer {
     constructor(state) {
         this.state = state;
-        this.geneticAlgorithm = new GeneticAlgorithm(50, 0.25, state);
+        this.geneticAlgorithm = new GeneticAlgorithm(50, 0.15, state);
         this.mcts = new MonteCarloTreeSearch(100, state);
     }
 
     train() {
-        let cur = Date.now()
+        let cur = Date.now();
+
         // Tìm cú đánh tốt nhất từ thuật toán di truyền
-        let bestGeneticShot = this.geneticAlgorithm.run(8);
+        let bestGeneticShot = this.geneticAlgorithm.run(5); // Giảm số thế hệ
 
         // Tìm cú đánh tốt nhất từ MCTS
         let bestMCTSShot = this.mcts.findBestShot(this.geneticAlgorithm.population);
 
-        // Tìm cú đánh phòng thủ tốt nhất
-        let bestDefensiveShot = this.findDefensiveShot();
+        console.log("Thời gian tìm kiếm:", Date.now() - cur, "ms");
 
-        // Kiểm tra nếu cú đánh phòng thủ tốt hơn thì chọn nó
-        if (bestDefensiveShot.distanceToHole > bestGeneticShot.distanceToHole && bestDefensiveShot.distanceToHole > bestMCTSShot.distanceToHole) {
-            return bestDefensiveShot;
-        }
-        console.log("Thời gian tìm kiếm cú đánh tốt nhất:", Date.now() - cur, "ms");
-
-        // Nếu cú đánh từ MCTS tốt hơn thì chọn cú đánh đó
+        // So sánh và chọn cú đánh tốt nhất
         return bestMCTSShot.successRate > 0.6 ? bestMCTSShot : bestGeneticShot;
     }
-
-    findDefensiveShot() {
-        let bestDefensiveShot = { angle: 0, power: 50, distanceToHole: Infinity, score: -Infinity };
-
-        for (let shot of this.geneticAlgorithm.population) {
-            let result = simulateShot(shot.angle, shot.power, this.state.whiteBall, this.state.balls, this.state.holes);
-
-            // Tìm vị trí của các bi đối thủ
-            let opponentBalls = this.state.balls.filter(b => b.color === 'RED');
-
-            // Tính điểm phòng thủ dựa trên nhiều yếu tố
-            let defensiveScore = 0;
-
-            // 1. Bóng trắng càng xa lỗ càng tốt
-            defensiveScore += result.distanceToHole * 0.5;
-
-            // 2. Bóng trắng nên cách xa các bóng đối thủ
-            let minDistanceToOpponent = Infinity;
-            for (let opponentBall of opponentBalls) {
-                let distance = result.whiteBallPosition.distanceFrom(opponentBall.position);
-                minDistanceToOpponent = Math.min(minDistanceToOpponent, distance);
-            }
-            defensiveScore += minDistanceToOpponent * 2;
-
-            // 3. Phạt nếu bóng trắng vào lỗ hoặc bóng đỏ vào lỗ
-            if (result.countBallToHole.whiteBallInHole || result.countBallToHole.countRedBallHole > 0) {
-                defensiveScore -= 1000;
-            }
-
-            // 4. Thưởng nếu đưa bóng vàng vào lỗ
-            defensiveScore += result.countBallToHole.countYellowBallHole * 500;
-
-            // Cập nhật cú đánh phòng thủ tốt nhất
-            if (defensiveScore > bestDefensiveShot.score) {
-                bestDefensiveShot = {
-                    ...shot,
-                    distanceToHole: result.distanceToHole,
-                    score: defensiveScore
-                };
-            }
-        }
-
-        return bestDefensiveShot;
-    }
-
-
 }
-
-
