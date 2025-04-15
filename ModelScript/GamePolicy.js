@@ -8,7 +8,7 @@ class GamePolicy {
         this.isFoul = false;
 
         this.player1_color = BallColor.RED;
-        this.player2_color = BallColor.YEALLOW;
+        this.player2_color = BallColor.YELLOW;
         this.player1 = document.getElementById("player1")// người chơi 1
         this.player2 = document.getElementById("player2")
         this.player1_score = 0;
