@@ -17,9 +17,7 @@ class GameWorld {
         this.width = this.board.width;
         this.height = this.board.height;
         this.size = new Vector2D(this.width, this.height);
-
-        this.isBotOn = true; // Chế độ bot
-        // this.score = 0;
+        this.isBotOn=this.IsBotOn();
 
         this.currentNumberBallRed = this.redBall.length; // Số bi đỏ còn lại
         this.currentNumberBallYellow = this.yellowBall.length; // Số bi vàng còn lại
@@ -27,6 +25,17 @@ class GameWorld {
         this.initEventListeners();
 
         this.lastTime = Date.now();
+
+    }
+    IsBotOn(){
+       
+        const url = window.location.href;
+        const urlObj = new URL(url);
+        const params = new URLSearchParams(urlObj.search);
+        const mode = params.get("mode");
+
+        if (mode=="pvp") return false
+        else return true
 
     }
 
