@@ -1,6 +1,6 @@
 
     document.getElementById("playAgainBtn").addEventListener("click", function () {
-        location.reload();
+        location.reload(); 
     });
 
     document.getElementById("homeBtn").addEventListener("click", function () {

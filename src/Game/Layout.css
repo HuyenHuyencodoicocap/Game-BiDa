@@ -117,41 +117,31 @@ body {
     display: none;
 
 }
-
-/* Nút được đặt theo tỉ lệ và nằm bên phải bàn chơi */
-.button-container {
+.game-buttons {
     position: absolute;
-    top: 40vh;         /* khoảng cách từ trên xuống */
-    right: 5vw;        /* khoảng cách từ mép phải màn hình */
+    top: 40vh;          /* đặt vị trí theo chiều dọc màn hình */
+    right: 5vw;         /* cách mép phải 2% chiều rộng màn hình */
     display: flex;
     flex-direction: column;
-    gap: 2vh;
+    gap: 2vh;           /* khoảng cách giữa các nút theo chiều dọc */
+    z-index: 10;
 }
 
-/* Style nút - theo tỉ lệ */
-.button-container button {
+.game-buttons button {
     padding: 1.5vh 3vw;
-    font-size: 2.5vh;
+    font-size: 1.8vh;
     border-radius: 1vh;
     border: none;
     cursor: pointer;
-    background-color: #095E31;
-    color: white;
-    transition: background-color 0.3s ease;
+    background-color: #004643;
+    color: #fffffe;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    height: 60px;
 }
 
-.button-container button:hover {
-    background-color: #4CAF50;
-}
-#homeBtn{
-    padding: 1.5vh 3vw;
-    width: 150px;
-    height: 60px;
-    
-}
-#playAgainBtn{
-    padding: 1.5vh 3vw;
-    width: 150px;
-    height: 60px;
-    margin-bottom: 3vh;
+.game-buttons button:hover {
+    background-color: #f9bc60;
+    color: #001e1d;
+    transform: scale(1.05);
 }
