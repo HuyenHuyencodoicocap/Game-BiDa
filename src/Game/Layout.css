@@ -117,3 +117,31 @@ body {
     display: none;
 
 }
+.game-buttons {
+    position: absolute;
+    top: 40vh;          /* đặt vị trí theo chiều dọc màn hình */
+    right: 5vw;         /* cách mép phải 2% chiều rộng màn hình */
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;           /* khoảng cách giữa các nút theo chiều dọc */
+    z-index: 10;
+}
+
+.game-buttons button {
+    padding: 1.5vh 3vw;
+    font-size: 1.8vh;
+    border-radius: 1vh;
+    border: none;
+    cursor: pointer;
+    background-color: #004643;
+    color: #fffffe;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    height: 60px;
+}
+
+.game-buttons button:hover {
+    background-color: #f9bc60;
+    color: #001e1d;
+    transform: scale(1.05);
+}
