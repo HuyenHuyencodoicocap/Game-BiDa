@@ -7,8 +7,8 @@ class GamePolicy {
         this.goHole=false;
         this.isFoul=false;
 
-        this.player1_color = BallColor.YELLOW;
-        this.player2_color = BallColor.RED;
+        this.player1_color = BallColor.RED;
+        this.player2_color = BallColor.YEALLOW;
         this.player1 = document.getElementById("player1")// người chơi 1
         this.player2 = document.getElementById("player2")
         this.player1_score = 0;
@@ -31,17 +31,17 @@ class GamePolicy {
                 this.changeTurn();
             }
         }
-        for (let yellowBall of this.gameWorld.yellowBall) {
-            if (yellowBall.isInHole && !yellowBall.check) {
+        for (let redBall of this.gameWorld.redBall) {
+            if (redBall.isInHole && !redBall.check) {
                 this.player1_score += 1;
-                yellowBall.check=true;
+                redBall.check=true;
                 if(this.turn==1)this.goHole=true;
             }
         }
-        for (let redBall of  this.gameWorld.redBall) {
-            if (redBall.isInHole && !redBall.check) {
+        for (let yellowBall of  this.gameWorld.yellowBall) {
+            if (yellowBall.isInHole && !yellowBall.check) {
                 this.player2_score += 1;
-                redBall.check=true;
+                yellowBall.check=true;
                 if(this.turn==2)this.goHole=true;
             }
         }
@@ -63,8 +63,8 @@ class GamePolicy {
         }
         if(!this.goHole || this.isFoul){
             this.turn = 3 - this.turn;
-            this.player1.classList.toggle("player-yellow-playing");
-            this.player2.classList.toggle("player-red-playing");
+            this.player1.classList.toggle("player-red-playing");
+            this.player2.classList.toggle("player-yellow-playing");
         }
         //thiết lập lai các tham số
         if(this.gameWorld.whiteBall.firstCollide!=null){
