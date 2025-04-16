@@ -4,11 +4,11 @@ class Assets {
         this.sounds = {}; 
 
         this.imagePaths = {
-            ball_White: "../../Assets/Image/ball_White.png",
-            ball_Red: "../../Assets/Image/ball_Red.png",
-            ball_Yellow: "../../Assets/Image/ball_Yellow.png",
-            board: "../../Assets/Image/background_Game.png",
-            stick: "../../Assets/Image/stick.png"
+            ball_White: "/../../Assets/Image/ball_White.png",
+            ball_Red: "/../../Assets/Image/ball_Red.png",
+            ball_Yellow: "/../../Assets/Image/ball_Yellow.png",
+            board: "/../../Assets/Image/background_Game.png",
+            stick: "/../../Assets/Image/stick.png"
         };
 
         this.soundPaths = {
