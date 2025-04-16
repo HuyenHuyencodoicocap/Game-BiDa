@@ -55,8 +55,6 @@ body {
 .player-info {
     display: flex;
     justify-content: center;
-    /* width: 800px; */
-    margin: 0 auto 20px auto;
     padding: 10px;
     width: 64vw;
 }
@@ -127,8 +125,8 @@ body {
     z-index: 10;
 }
 
-.game-buttons button {
-    padding: 1.5vh 3vw;
+.top-btn {
+    padding: 1.5vh 2vw;
     font-size: 1.8vh;
     border-radius: 1vh;
     border: none;
@@ -137,11 +135,19 @@ body {
     color: #fffffe;
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    height: 60px;
+    height: 80px;
+    width: 10vw;
 }
 
-.game-buttons button:hover {
+.top-btn:hover {
     background-color: #f9bc60;
     color: #001e1d;
     transform: scale(1.05);
+}
+
+.top-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 0 20px 0;
 }

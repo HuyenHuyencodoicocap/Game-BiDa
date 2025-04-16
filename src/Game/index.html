@@ -13,23 +13,26 @@
 
 <body>
     <!-- Tạo giao diện phần điểm số -->
-
-    <div class="player-info">
-        <div class="player-box player-red-playing" id="player1">
-
-            <div class="info" style="align-items: flex-end;">
-                <div class="name" id="player1_name">Player 1</div>
-                <div class="score"><span id="player1_score">0</span>/5 ball</div>
+    <div class="top-container">
+        <button id="homeBtn" class="top-btn">Home</button>
+        <div class="player-info">
+            <div class="player-box player-red-playing" id="player1">
+                
+                <div class="info" style="align-items: flex-end;">
+                    <div class="name" id="player1_name">Player 1</div>
+                    <div class="score"><span id="player1_score">0</span>/5 ball</div>
+                </div>
+                <img class="image-box " src="../../Assets/Image/avatar.jpg" alt="avatar">
             </div>
-            <img class="image-box " src="../../Assets/Image/avatar.jpg" alt="avatar">
-        </div>
-        <div class="player-box" id="player2">
-            <img class="image-box" src="../../Assets/Image/avatar.jpg" alt="avatar">
-            <div class="info" style="align-items: flex-start;">
-                <div class="name" id="player2_name">Computer</div>
-                <div class="score"><span id="player2_score">0</span>/5 ball</div>
+            <div class="player-box" id="player2">
+                <img class="image-box" src="../../Assets/Image/avatar.jpg" alt="avatar">
+                <div class="info" style="align-items: flex-start;">
+                    <div class="name" id="player2_name">Computer</div>
+                    <div class="score"><span id="player2_score">0</span>/5 ball</div>
+                </div>
             </div>
         </div>
+        <button id="playAgainBtn" class="top-btn">Play Again</button>
     </div>
 
 
@@ -37,10 +40,7 @@
     <canvas id="myCanvas" style="width: 100vw;height: 78vh;"></canvas>
     <h2 id="displayWinner"><span id="namePlayerWinner">Player 1</span> winner</h2>
 
-    <div class="game-buttons">
-        <button id="playAgainBtn">Play Again</button>
-        <button id="homeBtn">Home</button>
-    </div>
+    
     
 
 
