@@ -76,7 +76,7 @@ class GameWorld {
     }
 
     handleKeyInput(event) {
-        if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
+        if (this.gamePolicy.lockInput) return; // Nếu bóng đang lăn thì không nhận input
         if (this.gamePolicy.turn == 2 && this.isBotOn) return; //lượt bot
         var keyCode = event.code;
         if (!this.gamePolicy.isFoul) {
