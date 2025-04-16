@@ -11,7 +11,7 @@ class Board {
             new Vector2D(750,772),  //dưới giữa
 
         ]; // Mảng vị trí lỗ (Vector2D[])
-        this.HoleRadius = 64; // Bán kính lỗ (const float)
+        this.HoleRadius = 70; // Bán kính lỗ (const float)
         this.width = this.img.width; // Chiều rộng (const float)
         this.height = this.img.height; // Chiều cao (const float)
         

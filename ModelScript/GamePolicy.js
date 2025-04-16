@@ -80,7 +80,7 @@ class GamePolicy {
         this.gameWorld.whiteBall.resetFirstCollide();
         if (this.turn == 2 && this.gameWorld.isBotOn) {
             this.lockInput = false;
-            this.gameWorld.botProcess();
+            requestAnimationFrame(()=>this.gameWorld.botProcess());
         } else {
             this.lockInput = false;
         }
