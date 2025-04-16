@@ -49,7 +49,6 @@ class GameWorld {
         deltaTime = Math.min(deltaTime, 1000 / 24.0);
         deltaTime = Math.max(deltaTime, 1);
         this.lastTime = curTime;
-        this.stick.setDeltaTime(deltaTime);
         for (let i = 0; i < this.AllBalls.length; i++) {
             if (this.AllBalls[i].isInHole) continue;
             this.AllBalls[i].update(deltaTime);
