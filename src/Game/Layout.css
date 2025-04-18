@@ -55,8 +55,6 @@ body {
 .player-info {
     display: flex;
     justify-content: center;
-    /* width: 800px; */
-    margin: 0 auto 20px auto;
     padding: 10px;
     width: 64vw;
 }
@@ -116,4 +114,40 @@ body {
     text-align: center;
     display: none;
 
+}
+.game-buttons {
+    position: absolute;
+    top: 40vh;          /* đặt vị trí theo chiều dọc màn hình */
+    right: 5vw;         /* cách mép phải 2% chiều rộng màn hình */
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;           /* khoảng cách giữa các nút theo chiều dọc */
+    z-index: 10;
+}
+
+.top-btn {
+    padding: 1.5vh 2vw;
+    font-size: 1.8vh;
+    border-radius: 1vh;
+    border: none;
+    cursor: pointer;
+    background-color: #004643;
+    color: #fffffe;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    height: 80px;
+    width: 10vw;
+}
+
+.top-btn:hover {
+    background-color: #f9bc60;
+    color: #001e1d;
+    transform: scale(1.05);
+}
+
+.top-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 0 20px 0;
 }

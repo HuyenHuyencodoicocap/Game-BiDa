@@ -4,7 +4,6 @@ class Stick {
         this.angle = 0; // Hướng gậy
         this.power = 0; // Lực gậy
         this.whiteBall=whiteBall;
-        this.deltaTime = 1000/24.0;
     }
 
     draw() {
@@ -63,9 +62,6 @@ class Stick {
         this.whiteBall.vantoc = new Vector2D(dx, dy);
         PoolGame.getInstance().gameWorld.gamePolicy.lockInput=true;
     }
-    setDeltaTime(deltaTime){
-        this.deltaTime=deltaTime;
-    }
     // shoot() {
     //     // Hàm bắn bóng
     //     let dx = this.power / 50.0 * Math.cos(this.angle * Math.PI / 180);
@@ -80,7 +76,7 @@ class Stick {
         let index=0;
         while(index<10000){
             tempBall.vantoc=tempVantoc
-            tempBall.update(this.deltaTime);
+            tempBall.update(1);
             for(let ball of PoolGame.getInstance().gameWorld.AllBalls){
                 if(ball.isInHole || ball.color==BallColor.WHITE) continue;
                 if(tempBall.CollideBall(ball)){

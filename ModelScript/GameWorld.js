@@ -17,9 +17,7 @@ class GameWorld {
         this.width = this.board.width;
         this.height = this.board.height;
         this.size = new Vector2D(this.width, this.height);
-
-        this.isBotOn = true; // Chế độ bot
-        // this.score = 0;
+        this.isBotOn=this.IsBotOn();
 
         this.currentNumberBallRed = this.redBall.length; // Số bi đỏ còn lại
         this.currentNumberBallYellow = this.yellowBall.length; // Số bi vàng còn lại
@@ -27,6 +25,17 @@ class GameWorld {
         this.initEventListeners();
 
         this.lastTime = Date.now();
+
+    }
+    IsBotOn(){
+       
+        const url = window.location.href;
+        const urlObj = new URL(url);
+        const params = new URLSearchParams(urlObj.search);
+        const mode = params.get("mode");
+
+        if (mode=="pvp") return false
+        else return true
 
     }
 
@@ -40,7 +49,6 @@ class GameWorld {
         deltaTime = Math.min(deltaTime, 1000 / 24.0);
         deltaTime = Math.max(deltaTime, 1);
         this.lastTime = curTime;
-        this.stick.setDeltaTime(deltaTime);
         for (let i = 0; i < this.AllBalls.length; i++) {
             if (this.AllBalls[i].isInHole) continue;
             this.AllBalls[i].update(deltaTime);
@@ -68,7 +76,7 @@ class GameWorld {
     }
 
     handleKeyInput(event) {
-        if (this.lockInput) return; // Nếu bóng đang lăn thì không nhận input
+        if (this.gamePolicy.lockInput) return; // Nếu bóng đang lăn thì không nhận input
         if (this.gamePolicy.turn == 2 && this.isBotOn) return; //lượt bot
         var keyCode = event.code;
         if (!this.gamePolicy.isFoul) {
