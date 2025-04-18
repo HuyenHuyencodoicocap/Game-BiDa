@@ -3,45 +3,39 @@ function simulateShot(angle, power, whiteBall, balls, holes) {
     let countRedBallHole = 0;
     let countYellowBallHole = 0;
     let haveBallInHole = [];
-
+     
     // Tạo bóng trắng giả
     let simulatedWhiteBall = new Ball(whiteBall.position.copy(), whiteBall.color);
     simulatedWhiteBall.vantoc = new Vector2D(
-        Math.cos(angle * Math.PI / 180) * (power / 50),
-        Math.sin(angle * Math.PI / 180) * (power / 50)
+        power / 50.0 * Math.cos(angle * Math.PI / 180),
+        power / 50.0 * Math.sin(angle * Math.PI / 180)
     );
 
     // Tạo danh sách các bóng giả
     let simulatedBalls = balls.map(ball => new Ball(ball.position.copy(), ball.color));
     simulatedBalls.push(simulatedWhiteBall);
 
-    let maxSteps = 300;
-    let allBallsStopped = false;
+    let deltaTime = 1/100; // Giảm deltaTime để tăng độ chính xác
+    let maxSteps = 100; // Tăng số bước tối đa để bù cho deltaTime nhỏ hơn    let allBallsStopped = false;
     let stepCount = 0;
-    let deltaTime = 16; // Thời gian giữa các bước mô phỏng (16ms tương đương 60 FPS)
-
+    let countBallIsNotMoving = new Set(); // Đếm số bóng không di chuyển
     // Bắt đầu mô phỏng
-    for (let step = 0; step < maxSteps && !allBallsStopped; step++) {
-        allBallsStopped = true; // Mặc định cho đến khi có bóng còn di chuyển
+    for (let step = 0; step < maxSteps ; step++) {
+
         stepCount++;
 
+        
         for (let i = 0; i < simulatedBalls.length; i++) {
-            let ball = simulatedBalls[i];
-            if (ball.isInHole) continue; // Bỏ qua bóng đã vào lỗ
-
-            ball.update(deltaTime); // Cập nhật tốc độ và vị trí của bóng
-
-            // Kiểm tra va chạm bóng
+            if (simulatedBalls[i].isInHole) continue;
+            simulatedBalls[i].update(deltaTime);
             for (let j = i + 1; j < simulatedBalls.length; j++) {
-                if (!simulatedBalls[j].isInHole) {
-                    ball.CollideBall(simulatedBalls[j]);
-                }
+                if (simulatedBalls[j].isInHole) continue;
+                simulatedBalls[i].CollideBall(simulatedBalls[j]);
             }
-            ball.CollideWall(); // Kiểm tra va chạm với tường
-            ball.CollideHole(); // Kiểm tra va chạm với lỗ
-
-            if (ball.isMoving()) {
-                allBallsStopped = false; // Nếu có bóng còn di chuyển
+            simulatedBalls[i].CollideWall();
+            simulatedBalls[i].CollideHole();
+            if( ! simulatedBalls[i].isMoving() || simulatedBalls[i].isInHole){
+                countBallIsNotMoving.add(simulatedBalls[i].id); // Thêm bóng vào danh sách không di chuyển
             }
         }
 
@@ -58,15 +52,26 @@ function simulateShot(angle, power, whiteBall, balls, holes) {
                 }
             }
         }
+        if(countBallIsNotMoving.size===simulatedBalls.length){
+            break; // Nếu tất cả các bóng đều không di chuyển, dừng mô phỏng
+        }
 
     }
+    //  console.log(`bong dung di chuyen:${countBallIsNotMoving.size} stepCount: ${stepCount} deltaTime: ${deltaTime} power: ${power} angle: ${angle} whiteBallInHole: ${whiteBallInHole} countRedBallHole: ${countRedBallHole} countYellowBallHole: ${countYellowBallHole}`);
 
     let newWhiteBall = simulatedBalls.find(item => item.color === BallColor.WHITE);
-    console.log(`So buoc mo phong: ${stepCount}`);
-    console.log(`Bong trang vao lo: ${whiteBallInHole}, So luong bi do vao lo: ${countRedBallHole}, So luong bi vang vao lo: ${countYellowBallHole}`);
-    console.log(haveBallInHole);
+
 
     // Kiểm tra kết quả
+    if (countYellowBallHole > 0 && !whiteBallInHole && countRedBallHole === 0) {
+        return {
+            success: true,
+            message: "Thành công",
+            whiteBallPosition: newWhiteBall?.position.copy(),
+            distanceToHole: 0,
+            countBallToHole: { whiteBallInHole, countRedBallHole, countYellowBallHole }
+        };
+    }
     if (whiteBallInHole || countRedBallHole > 0) {
         return {
             success: false,
@@ -78,15 +83,7 @@ function simulateShot(angle, power, whiteBall, balls, holes) {
     }
 
     // Trả về nếu bi vàng vào lỗ
-    if (countYellowBallHole > 0) {
-        return {
-            success: true,
-            message: "Thành công",
-            whiteBallPosition: newWhiteBall?.position.copy(),
-            distanceToHole: 0,
-            countBallToHole: { whiteBallInHole, countRedBallHole, countYellowBallHole }
-        };
-    }
+   
 
     // Tính khoảng cách từ quả bóng trắng đến lỗ gần nhất nếu không có bi nào vào lỗ
     let minDistance = Infinity;
