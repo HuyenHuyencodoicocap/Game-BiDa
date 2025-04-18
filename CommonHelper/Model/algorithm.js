@@ -11,7 +11,7 @@ class GeneticAlgorithm {
 
   // Khởi tạo quần thể ban đầu
   initializePopulation() {
-    while (this.population.size <= this.populationSize) {
+    while (this.population.size < this.populationSize) {
       const individual = {
         angle: Math.random() * 360 - 180, // Góc từ -180 đến 180
         power: Math.random() * 200, // Lực từ 0 đến 200
@@ -170,6 +170,7 @@ class GeneticAlgorithm {
         this.evaluateFitness(key); // Tính toán và cập nhật fitness
       }
     });
+
     this.population = new Map([
       ...this.population,
       ...this.potentialPopulation,
