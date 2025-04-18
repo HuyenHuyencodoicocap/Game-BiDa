@@ -6,12 +6,12 @@ class GeneticAlgorithm {
     this.population = new Map(); // Sử dụng Set để đảm bảo tính duy nhất
     this.bestPopulation = new Map(); // Lưu các cú đánh tốt nhất
     this.potentialPopulation = new Map(); // Lưu các cú đánh tiềm năng
-    this.cache = {}; // Cache các kết quả simulateShot để tránh tính toán lại
+    this.cache = new Map(); // Cache các kết quả simulateShot để tránh tính toán lại
   }
 
   // Khởi tạo quần thể ban đầu
   initializePopulation() {
-    while (this.population.size < this.populationSize) {
+    while (this.population.size <= this.populationSize) {
       const individual = {
         angle: Math.random() * 360 - 180, // Góc từ -180 đến 180
         power: Math.random() * 200, // Lực từ 0 đến 200
@@ -31,8 +31,8 @@ class GeneticAlgorithm {
   // Đánh giá độ phù hợp (fitness) của một cú đánh
   evaluateFitness(keyPopulation) {
     let { angle, power } = this.population.get(keyPopulation);
-    const key = `${angle}-${power}`;
-    if (this.cache[key]) return this.cache[key];
+    const key = this.hash(angle, power);
+    if (this.cache.get(keyPopulation)) return this.cache.get(keyPopulation); // Trả về kết quả đã tính toán trước đó
 
     let result = simulateShot(
       angle,
@@ -42,15 +42,12 @@ class GeneticAlgorithm {
       this.simulation.holes
     );
     let fitness = 0;
-    console.log(result);
 
     if (result.success) {
       // Trường hợp thành công, ưu tiên bi vàng vào lỗ
       fitness = 3000 + result.countBallToHole.countYellowBallHole * 500 + 500;
     } else {
       let penalty = result.countBallToHole.whiteBallInHole ? 900 : 0; // Tăng phạt cho bóng trắng vào lỗ
-      console.log("penalty", penalty);
-      console.log(-result.distanceToHole * 2);
 
       fitness =
         -result.distanceToHole * 2 -
@@ -76,9 +73,9 @@ class GeneticAlgorithm {
       power,
       fitness: fitness,
     });
-    console.log("fitness", fitness, angle, power);
-    this.cache[key] = { fitness, distanceToHole: result.distanceToHole };
-    return this.cache[key];
+    this.cache.set(keyPopulation, { angle, power, fitness }); // Lưu kết quả vào cache
+    // Lưu kết quả vào cache để tránh tính toán lại
+    return this.cache.get(keyPopulation); // Trả về fitness
   }
 
   // Chọn cha mẹ từ quần thể
@@ -152,8 +149,6 @@ class GeneticAlgorithm {
     this.initializePopulation();
 
     for (let gen = 0; gen < generations; gen++) {
-      console.log(this.population);
-
       let newPopulation = new Map();
 
       let remainingSize = this.population.size;
@@ -170,7 +165,11 @@ class GeneticAlgorithm {
 
       this.population = newPopulation; // Cập nhật quần thể mới
     }
-
+    this.population.forEach((individual, key) => {
+      if (individual.fitness === -Infinity) {
+        this.evaluateFitness(key); // Tính toán và cập nhật fitness
+      }
+    });
     this.population = new Map([
       ...this.population,
       ...this.potentialPopulation,
