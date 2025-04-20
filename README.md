@@ -12,7 +12,10 @@
   - "Kéo chuột lên": Giảm lực
   - "Nhả chuột": Bắn
 # Luật chơi
-- Nhắm bắn không trúng bóng mất lượt. Đối thủ được đặt lại vị trí bóng trắng
-- Nhắm bắn lượt đầu trúng bi đối thủ mất lượt. Đối thủ được đặt lại vị trí bóng trắng.
+  - Nhắm bắn không trúng bóng nào -> phạm lỗi
+  - Lượt đầu, bắn trúng bi đối thủ -> phạm lỗi
+  - Bóng trắng vào lỗ -> phạm lỗi
+  - Bắn bi của mình không vào --> mất lượt
+  - Bóng vào lỗ 5/5 --> Chiến thắng
 # Link chơi
 Truy cập: https://huyenhuyencodoicocap.github.io/Game-BiDa/src/Home/
