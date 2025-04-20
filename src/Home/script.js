@@ -24,7 +24,7 @@
             } else {
                 window.location.href = '../Game/index.html?mode=bot';
             }
-        }, 50000);
+        }, 5000);
         
     }
     
