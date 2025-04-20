@@ -109,7 +109,7 @@ class GamePolicy {
                 this.namePlayerWinner2.innerHTML = "Computer"
             }
             else
-                this.namePlayerWinner2.innerHTML = "Player2"
+                this.namePlayerWinner2.innerHTML = "Player 2"
             this.displayWinner.style.display = "block";
             return true;
         } else {
