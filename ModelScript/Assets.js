@@ -12,9 +12,22 @@ class Assets {
         };
 
         this.soundPaths = {
+            strike: "../../Assets/Sounds/Strike.wav",
+            side: "../../Assets/Sounds/Side.wav",
+            hole: "../../Assets/Sounds/Hole.wav",
+            ballCollide: "../../Assets/Sounds/BallsCollide.wav",
         };
     }
-
+    playSound(key) {
+        if (this.sounds[key]) {
+            this.sounds[key].currentTime = 0;
+            this.sounds[key].play().catch(error => {
+                console.error(`Error playing sound ${key}:`, error);
+            });
+        } else {
+            console.warn(`Sound ${key} not found.`);
+        }
+    }
     loadImage(key, path) {
         return new Promise((resolve, reject) => {
             const img = new Image();

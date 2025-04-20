@@ -26,6 +26,7 @@ class GamePolicy {
         }
     }
     update() {
+        if(this.waitForNextTurn)return
         if (this.lockInput) {
             let isNextTurn = true;
             for (let ball of this.gameWorld.AllBalls) {
@@ -33,7 +34,12 @@ class GamePolicy {
             }
             //nếu chưa có ai win thì đổi lượt
             if (isNextTurn && !this.isWin()) {
-                this.changeTurn();
+                setTimeout(() => {
+                    this.changeTurn();
+                    console.log("change turn");
+                    this.waitForNextTurn = false;
+                }, 1000);
+                this.waitForNextTurn = true;
             }
         }
         for (let redBall of this.gameWorld.redBall) {
