@@ -267,6 +267,6 @@ class AITrainer {
     } else {
       console.log("Chọn cú đánh từ GA:", bestGeneticShot);
     }
-    return bestMCTSShot.successRate === 1 ? bestMCTSShot : bestGeneticShot;
+    return bestMCTSShot.successRate > 0.6 ? bestMCTSShot : bestGeneticShot;
   }
 }
